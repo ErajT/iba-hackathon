@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import styled from "styled-components";
 import axios from "axios"; // Import axios
 // import Cookies from "js-cookie"; // Import js-cookie for managing cookies
 // import { backendUrl } from "./constants";
 import { useNavigate } from "react-router-dom";
+import { ThemeContext } from "../context/ThemeContext";
 
 // Styled Components (same as before)
 const MainContainer = styled.div`
@@ -193,6 +194,8 @@ const Login = () => {
 
   const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
+  const {switchMode} = useContext(ThemeContext)
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -290,7 +293,7 @@ const Login = () => {
   return (
     <MainContainer>
       {/* <Logo src="/Logo15.png" alt="Logo" /> */}
-      <Container>
+      <Container className="">
         <SignInContainer>
           <Form onSubmit={handleLogin}>
             <InputContainer>
@@ -313,6 +316,7 @@ const Login = () => {
             <ForgotPasswordLink onClick={() => navigate("/forgot")}>
               Forgot Password?
             </ForgotPasswordLink>
+      <button >abc</button>
           </Form>
         </SignInContainer>
         <OverlayContainer>

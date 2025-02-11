@@ -2,6 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import styled, { createGlobalStyle } from "styled-components";
 import Login from "./components/Login"; // Ensure correct capitalization
+import UserHome from "./Pages/Home/UserHome";
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -29,10 +30,10 @@ const MainContent = styled.div`
 
 const AppLayout = () => {
   return (
-    <AppContainer>
+    <AppContainer className="text-gray-900 dark:text-white">
       <MainContent>
         <Routes>
-          {/* <Route path="/" element={<Landing />} /> */}
+          <Route path="/" element={<UserHome/>} />
           <Route path="/login" element={<Login />} />
         </Routes>
       </MainContent>
