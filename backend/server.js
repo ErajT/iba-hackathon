@@ -3,8 +3,9 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 // const { checkToken } = require("./auth/token_validation")
 
-// const userRouter = require('./api/users/user.router');
+const userRouter = require('./api/users/user.router');
 const ScheduleRouter = require('./Routes/ScheduledRoutes');
+const UsersRouter = require('./Routes/UsersRouter');
 
 let app = express();
 app.options('*', cors()); // Allow preflight requests
@@ -28,13 +29,14 @@ app.use(bodyParser.urlencoded({ limit: '200mb', extended: true }));
 
 //middleware for request body
 app.use(express.json());
-// app.use('/users', userRouter);
+app.use('/users', userRouter);
 app.use('/schedule', ScheduleRouter);
+app.use('users-crud', UsersRouter);
 
 
 
 
-app.listen(3000,()=>{
+app.listen(2000,()=>{
   console.log("Server has started");
 })
 
