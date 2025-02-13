@@ -34,18 +34,19 @@ exports.getAllUsers = async (req, res) => {
     const getAllUsersSQL = `
         SELECT UserID, Name, PhoneNumber, Email 
         FROM user
+        WHERE IsAdmin = 0
     `;
 
     try {
         // Get all users
         const users = await Qexecution.queryExecute(getAllUsersSQL);
 
-        // if (users.length === 0) {
-        //     return res.status(404).send({
-        //         status: "fail",
-        //         message: "No users found.",
-        //     });
-        // }
+        if (users.length === 0) {
+            return res.status(404).send({
+                status: "fail",
+                message: "No users found.",
+            });
+        }
 
         res.status(200).send({
             status: "success",
@@ -69,6 +70,7 @@ exports.getUserById = async (req, res) => {
         SELECT UserID, Name, PhoneNumber, IsAdmin, Email 
         FROM user
         WHERE UserID = ?
+        AND IsAdmin = 0
     `;
 
     try {
@@ -99,8 +101,7 @@ exports.getUserById = async (req, res) => {
 
 // Update User by ID
 exports.updateUser = async (req, res) => {
-    const { id } = req.params;
-    const { Name, PhoneNumber, Email } = req.body;
+    const { UserID, Name, PhoneNumber, Email } = req.body;
     const isAdmin = 0; // Always set as false
 
     const updateUserSQL = `
@@ -111,7 +112,7 @@ exports.updateUser = async (req, res) => {
 
     try {
         // Update user by ID
-        const result = await Qexecution.queryExecute(updateUserSQL, [Name, PhoneNumber, isAdmin, Email, id]);
+        const result = await Qexecution.queryExecute(updateUserSQL, [Name, PhoneNumber, isAdmin, Email, UserID]);
 
         if (result.affectedRows === 0) {
             return res.status(404).send({
@@ -166,44 +167,3 @@ exports.deleteUser = async (req, res) => {
         });
     }
 };
-
-// Create Many Users
-exports.createManyUsers = async (req, res) => {
-    const users = req.body.users;
-    if (!Array.isArray(users) || users.length === 0) {
-        return res.status(400).send({
-            status: "fail",
-            message: "Invalid input. Provide an array of users.",
-        });
-    }
-
-    const values = users.map(({ Name, PhoneNumber, Email }) => [
-        Name,
-        PhoneNumber,
-        0, // Always set IsAdmin as false
-        Email,
-    ]);
-
-    const createManyUsersSQL = `
-        INSERT INTO user (Name, PhoneNumber, IsAdmin, Email)
-        VALUES ?
-    `;
-
-    try {
-        // Create many users
-        const result = await Qexecution.queryExecute(createManyUsersSQL, [values]);
-
-        res.status(201).send({
-            status: "success",
-            message: `${result.affectedRows} users created successfully.`,
-        });
-    } catch (err) {
-        console.error("Error creating many users:", err.message);
-        res.status(500).send({
-            status: "fail",
-            message: "Error creating many users.",
-            error: err.message,
-        });
-    }
-};
-

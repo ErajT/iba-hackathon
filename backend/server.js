@@ -31,7 +31,7 @@ app.use(bodyParser.urlencoded({ limit: '200mb', extended: true }));
 app.use(express.json());
 app.use('/users', userRouter);
 app.use('/schedule', ScheduleRouter);
-app.use('users-crud', UsersRouter);
+app.use('/usersCrud', UsersRouter);
 
 
 

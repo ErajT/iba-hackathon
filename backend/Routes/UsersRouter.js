@@ -6,16 +6,13 @@ const UserHandler = require('../Controllers/UsersControllers');
 router.route('/createUser')
     .post(UserHandler.createUser);
 
-router.route('/createManyUsers')
-    .post(UserHandler.createManyUsers);
-
 router.route('/getAllUsers')
     .get(UserHandler.getAllUsers);
 
 router.route('/getUserById/:id')
     .get(UserHandler.getUserById);
 
-router.route('/updateUser/:id')
+router.route('/updateUser')
     .put(UserHandler.updateUser);
 
 router.route('/deleteUser/:id')
