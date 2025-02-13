@@ -1,0 +1,1 @@
+const backendUrl = "https://iba-hackathon-backend.vercel.app";
