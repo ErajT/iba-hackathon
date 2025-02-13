@@ -5,24 +5,15 @@ const crypto = require('crypto');
 module.exports= {
     create: (data,callBack)=>{
         pool.query(
-            `select * from registration where email = ?`,
-            [data.email],
+            `insert into registration(email, password, position, id, Allowed) values(?,?,?,?,?)`,
+            [data.email, data.password, data.position, data.id, 1],
             (error, results) => {
                 if (error) {
                     return callBack(error);
                 }
-                pool.query(
-                    `insert into registration(email, password, position, id, Allowed) values(?,?,?,?,?)`,
-                    [data.email, data.password, data.position, data.id, 1],
-                    (error, results) => {
-                        if (error) {
-                            return callBack(error);
-                        }
-                        return callBack(null, results );
-                    }
-                );
+                return callBack(null, results );
             }
-        );        
+        );
     },
     getUserByEmail: async (email,callBack)=>{
         const SQL= "SELECT * FROM registration where email= ? AND Allowed = ?";
