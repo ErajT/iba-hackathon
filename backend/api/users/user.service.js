@@ -11,22 +11,16 @@ module.exports= {
                 if (error) {
                     return callBack(error);
                 }
-                if (results.length > 0) {
-                    // Email already exists
-                    return callBack(null, results);
-                } else {
-                    // Insert the new user
-                    pool.query(
-                        `insert into registration(email, password, position, id, Allowed) values(?,?,?,?,?)`,
-                        [data.email, data.password, data.position, data.id, 1],
-                        (error, results) => {
-                            if (error) {
-                                return callBack(error);
-                            }
-                            return callBack(null, results );
+                pool.query(
+                    `insert into registration(email, password, position, id, Allowed) values(?,?,?,?,?)`,
+                    [data.email, data.password, data.position, data.id, 1],
+                    (error, results) => {
+                        if (error) {
+                            return callBack(error);
                         }
-                    );
-                }
+                        return callBack(null, results );
+                    }
+                );
             }
         );        
     },
