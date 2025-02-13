@@ -33,8 +33,8 @@ const AppLayout = () => {
     <AppContainer className="text-gray-900 dark:text-white">
       <MainContent>
         <Routes>
-          <Route path="/" element={<UserHome/>} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/login" element={<UserHome/>} />
+          <Route path="/" element={<Login />} />
         </Routes>
       </MainContent>
     </AppContainer>
