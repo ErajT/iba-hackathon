@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import styled, { createGlobalStyle } from "styled-components";
-import Login from "./components/Login"; // Ensure correct capitalization
+import Login from "./components/login"; // Ensure correct capitalization
 import UserHome from "./Pages/Home/UserHome";
 
 const GlobalStyle = createGlobalStyle`
