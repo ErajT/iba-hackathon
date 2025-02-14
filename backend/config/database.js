@@ -6,7 +6,7 @@ const connection=mysql.createPool({
     host: "learn-2.mysql.database.azure.com",
     user: "learn",
     password: "Delib2005",
-    database: "learn",
+    database: "iba",
     port: 3306,
     ssl: true
 })
