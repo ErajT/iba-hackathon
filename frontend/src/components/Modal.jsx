@@ -13,13 +13,20 @@ import {
 function Modal({title,desc,children}) {
 
     const [uiElements,setUiElements] = useState()
+    const [dummy,setDummy] = useState(false)
+
+const updateElements = ()=>{
+  if(!children.length) return
+  let arr = [...children];
+  arr.splice(0,1);
+  setUiElements(arr);
+  console.log(children)
+
+}
 
     useEffect(()=>{
-        if(!children.length) return
-        let arr = [...children];
-        arr.splice(0,1);
-        setUiElements(arr);
-    },[])
+      updateElements()
+    },[children])
 
   return (
 <Dialog >

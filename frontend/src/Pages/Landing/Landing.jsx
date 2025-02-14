@@ -40,7 +40,7 @@ function UserHome() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#1a3e48] to-[#2b6777] text-white overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-b from-[#1a3e48] to-[#08242c] text-white overflow-hidden">
       {/* Enhanced Animated background */}
       <div className="fixed inset-0 z-0 overflow-hidden">
         <div className="absolute inset-0 bg-[url('/noise.png')] opacity-5" />
@@ -59,14 +59,14 @@ function UserHome() {
             }}
           />
         ))}
-        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#2b6777] to-transparent animate-wave" />
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#08242c] to-transparent animate-wave" />
       </div>
 
       {/* Navigation */}
       <nav
         className={cn(
           "fixed w-full z-50 transition-all duration-500",
-          scrolled ? "bg-[#1a3e48]/80 backdrop-blur-md py-4 border-b border-[#2b6777]/20" : "py-6",
+          scrolled ? "bg-[#1a3e48]/80 backdrop-blur-md py-4 border-b border-[##08242c]/20" : "py-6",
         )}
       >
         <div className="container mx-auto px-6 flex items-center justify-between">
@@ -126,7 +126,7 @@ function UserHome() {
             </Link>
           ))}
           <Link to="/get-started" onClick={() => setMobileMenuOpen(false)}>
-            <Button className="bg-[#2b6777] hover:bg-[#3a7d8f] text-white mt-6">Get Started</Button>
+            <Button className="bg-[#2b6777] hover:bg-[#3a7d8f] text-white mt-6">Login</Button>
           </Link>
         </div>
       )}
@@ -134,7 +134,7 @@ function UserHome() {
       <section id="home" className="relative min-h-screen flex items-center pt-20">
         <div className="container mx-auto px-6">
           <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#2b6777]/10 border border-[#2b6777]/20 mb-8 animate-fade-up">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#08242c]/10 border border-[#08242c]/20 mb-8 animate-fade-up">
               <Star className="h-4 w-4 text-[#c8d8e4] animate-pulse" />
               <span className="text-sm">Lorem ipsum dolor sit amet</span>
             </div>
@@ -186,13 +186,13 @@ function UserHome() {
             {features.map((feature, index) => (
               <Card
                 key={index}
-                className="p-8 group hover:border-[#2b6777]/50 transition-all duration-500 bg-[#1a3e48]/50 backdrop-blur-lg border-[#2b6777]/20 overflow-hidden animate-fade-up"
+                className="p-8 group hover:border-[#08242c]/50 transition-all duration-500 bg-[#1a3e48]/50 backdrop-blur-lg border-[#08242c]/20 overflow-hidden animate-fade-up"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
                 <div className="relative">
-                  <div className="absolute inset-0 bg-gradient-to-r from-[#2b6777] to-[#3a7d8f] blur-[100px] opacity-0 group-hover:opacity-30 transition-opacity duration-500" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#08242c] to-[#3a7d8f] blur-[100px] opacity-0 group-hover:opacity-30 transition-opacity duration-500" />
                   <div className="relative z-10">
-                    <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-[#2b6777]/10 mb-6 group-hover:bg-[#2b6777]/20 transition-colors duration-300">
+                    <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-[#08242c]/10 mb-6 group-hover:bg-[#08242c]/20 transition-colors duration-300">
                       <feature.icon className="h-7 w-7 text-[#c8d8e4] group-hover:scale-110 transition-transform duration-300" />
                     </div>
                     <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
@@ -205,7 +205,7 @@ function UserHome() {
         </div>
       </section>
 
-      <section id="services" className="relative py-32 bg-[#2b6777]/5">
+      <section id="services" className="relative py-32 bg-[#08242c]/5">
         <div className="container mx-auto px-6">
           <div className="text-center mb-20">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 animate-fade-up">Lorem Ipsum</h2>
@@ -217,7 +217,7 @@ function UserHome() {
             {services.map((service, index) => (
               <Card
                 key={index}
-                className="p-8 group hover:border-[#2b6777]/50 transition-all duration-500 bg-[#1a3e48]/50 backdrop-blur-lg border-[#2b6777]/20 animate-fade-up"
+                className="p-8 group hover:border-[#08242c]/50 transition-all duration-500 bg-[#1a3e48]/50 backdrop-blur-lg border-[#2b6777]/20 animate-fade-up"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
                 <h3 className="text-2xl font-bold mb-4 flex items-center gap-3">
@@ -228,7 +228,7 @@ function UserHome() {
                 <Link to={`/services/${service.title.toLowerCase().replace(/\s+/g, "-")}`}>
                   <Button
                     variant="outline"
-                    className="group-hover:bg-[#2b6777] group-hover:text-white group-hover:border-transparent transition-all duration-300 group relative overflow-hidden"
+                    className="group-hover:bg-[#08242c] group-hover:text-white group-hover:border-transparent transition-all duration-300 group relative overflow-hidden"
                   >
                     <span className="relative z-10">Lorem Ipsum</span>
                     <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" />
@@ -244,8 +244,8 @@ function UserHome() {
       {/* Contact Section */}
       <section id="contact" className="relative py-32">
         <div className="container mx-auto px-6">
-          <Card className="max-w-4xl mx-auto p-8 md:p-12 text-center bg-[#1a3e48]/50 backdrop-blur-lg border-[#2b6777]/20 overflow-hidden animate-fade-up">
-            <div className="absolute inset-0 bg-gradient-to-r from-[#2b6777] to-[#3a7d8f] blur-[100px] opacity-20" />
+          <Card className="max-w-4xl mx-auto p-8 md:p-12 text-center bg-[#1a3e48]/50 backdrop-blur-lg border-[#08242c]/20 overflow-hidden animate-fade-up">
+            <div className="absolute inset-0 bg-gradient-to-r from-[#08242c] to-[#3a7d8f] blur-[100px] opacity-20" />
             <div className="relative z-10">
               <h2 className="text-3xl md:text-4xl font-bold mb-4">Lorem Ipsum Dolor Sit Amet?</h2>
               <p className="text-lg md:text-xl text-white/70 mb-8 max-w-2xl mx-auto">
@@ -267,7 +267,7 @@ function UserHome() {
                   <Button
                     size="lg"
                     variant="outline"
-                    className="w-full sm:w-auto text-[#c8d8e4] border-[#c8d8e4] hover:bg-[#2b6777]/10 group relative overflow-hidden"
+                    className="w-full sm:w-auto text-[#c8d8e4] border-[#c8d8e4] hover:bg-[#08242c]/10 group relative overflow-hidden"
                   >
                     <span className="relative z-10">Dolor Sit Amet</span>
                     <ChevronRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />

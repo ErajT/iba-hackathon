@@ -14,7 +14,7 @@ exports.createUser = async (req, res) => {
         // Create new user
         const result = await Qexecution.queryExecute(createUserSQL, [Name, PhoneNumber, isAdmin, Email]);
 
-        res.status(201).send({
+        res.status(200).send({
             status: "success",
             message: "User created successfully.",
             userId: result.insertId,

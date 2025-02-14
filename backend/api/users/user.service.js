@@ -5,8 +5,8 @@ const crypto = require('crypto');
 module.exports= {
     create: (data,callBack)=>{
         pool.query(
-            `insert into registration(email, password, position, Allowed) values(?,?,?,?,?)`,
-            [data.email, data.password, data.position, data.id, 1],
+            `insert into registration(email, password, position, Allowed) values(?,?,?,?)`,
+            [data.email, data.password, data.position, 1],
             (error, results) => {
                 if (error) {
                     return callBack(error);

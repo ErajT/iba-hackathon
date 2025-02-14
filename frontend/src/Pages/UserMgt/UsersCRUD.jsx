@@ -8,7 +8,7 @@ import {
     TableHeader,
     TableRow,
   } from "@/components/ui/table"
-import { Delete, DeleteIcon, Edit, Trash, Trash2Icon } from 'lucide-react'
+import { Delete, DeleteIcon, Edit, PlusCircle, Trash, Trash2Icon, User2Icon } from 'lucide-react'
 import axios from 'axios'
 import Modal from '@/components/Modal'
 import EditUserDialog from '@/components/EditUserDialog'
@@ -36,8 +36,14 @@ useEffect(()=>{
 
 
     return (
-    <div className='px-6'> <p className='text-3xl text-center font-bold my-8'>Users CRUD</p>
-        <Table className="border-1 dark:border-gray-50 border-[#0088ae] rounded-4xl">
+    <div className='px-6'> 
+    <div className='flex items-center justify-center '>
+    <User2Icon className='h-10 w-16' />
+    <p className='text-3xl text-center font-bold my-8'> 
+    User Management</p>
+      
+    </div>
+        <Table className="border-1 dark:border-gray-50 border-[#0088ae]  ">
   <TableCaption>A list of all the users.</TableCaption>
   <TableHeader >
     <TableRow className="font-extrabold border-1 dark:border-gray-50 border-[#0088ae]">
@@ -62,19 +68,34 @@ useEffect(()=>{
     </TableRow> */}
 
 {tableData.map((v,i)=>{
-    return <TableRowWrapper key={i} id={v.UserID} name={v.Name} phone={v.PhoneNumber} email={v.Email} onUpdate={setUpdateTrigger} />
+  return <TableRowWrapper key={i} id={v.UserID} name={v.Name} phone={v.PhoneNumber} email={v.Email} onUpdate={setUpdateTrigger}  />
 })}
 
   </TableBody>
 </Table>
+
+
+<Modal>
+  <PlusCircle  className='absolute right-2 bottom-6 w-32 h-12 hover:cursor-pointer' />
+  <EditUserDialog isUpdate={false} onUpdate={setUpdateTrigger} />
+
+</Modal>
+
 
     </div>
   )
 }
 
 
-const TableRowWrapper = ({id,name,email,phone,role,onUpdate})=>{
-  console.log(onUpdate)
+const TableRowWrapper = ({id,name,email,phone,role,onUpdate })=>{
+
+
+  const [data,setData] = useState({
+   id:id,name:name,email:email,phone:phone,role:role 
+  })
+
+
+
     return  <TableRow className="border-1 dark:border-gray-50 border-[#0088ae]">
     <TableCell className="font-medium ">{id}</TableCell>
     <TableCell>{name}</TableCell>
@@ -83,17 +104,18 @@ const TableRowWrapper = ({id,name,email,phone,role,onUpdate})=>{
     <TableCell className="">{role}</TableCell>
     <TableCell className="">
         
-        <Modal>
+        <Modal >
         <Edit className='text-green-600 hover:cursor-pointer' />
-<EditUserDialog id={id} name={name} email={email} phone={phone} role={role} onUpdate={onUpdate} />
+<EditUserDialog id={data.id} name={data.name} email={data.email} phone={data.phone} role={data.role} onUpdate={onUpdate} isUpdate={true} />
         </Modal>
 
+{/* {modalElement} */}
 
         </TableCell>
     <TableCell className="">
         <Modal>
-        <Trash2Icon className='text-red-700 hover:cursor-pointer' />
-   <DeleteUserDialog userId={id} />
+        <Trash2Icon className='text-red-700 hover:cursor-pointer hover:dark:text-[#13758f]' />
+   <DeleteUserDialog userId={id}  onUpdate={onUpdate} />
         </Modal>
     </TableCell>
   </TableRow>
