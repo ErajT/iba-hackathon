@@ -6,6 +6,8 @@ import UserHome from "./Pages/Home/UserHome";
 import Landing from "./Pages/Landing/Landing";
 import Login from "./Pages/LoginAndSignup/Login";
 import { Layout } from "./components/Layout";
+import { AdminHome } from "./Pages/Home/AdminHome";
+import UsersCRUD from "./Pages/UserMgt/UsersCRUD";
 
 const GlobalStyle = createGlobalStyle`
 //   * {
@@ -38,11 +40,15 @@ const AppLayout = () => {
         <Routes>
         <Route element={<Layout />}>
 
-          <Route path="/" element={<UserHome/>} />
+          <Route path="/home-admin" element={<AdminHome/>} />
+          <Route path="/admin/users" element={<UsersCRUD />} />
+          
+          
+          <Route path="/home" element={<UserHome/>} />
         </Route>
-          <Route path="/login1" element={<Login />} />
+          <Route path="/login" element={<Login />} />
           {/* <Route path="/login" element={<Login />} /> */}
-          <Route path="/landing" element={<Landing />} />
+          <Route path="/" element={<Landing />} />
         </Routes>
       </MainContent>
     </AppContainer>
