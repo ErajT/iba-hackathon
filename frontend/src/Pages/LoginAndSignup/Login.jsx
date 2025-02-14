@@ -12,6 +12,7 @@ import axios from "axios"
 import { toast, ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import { useNavigate } from "react-router-dom"
+import { backendUrl } from "@/components/constants"
 
 export default function LoginSignup() {
   const [activeTab, setActiveTab] = useState("login")
@@ -55,7 +56,7 @@ export default function LoginSignup() {
     e.preventDefault()
     setIsLoading(true)
     try {
-      const response = await axios.post(`http://localhost:2000/users/login`, {
+      const response = await axios.post(`${backendUrl}/users/login`, {
         email,
         password,
       })
@@ -74,17 +75,18 @@ export default function LoginSignup() {
     e.preventDefault()
     setIsLoading(true)
     try {
-      const createUserResponse = await axios.post("http://localhost:2000/usersCrud/createUser", {
+      const createUserResponse = await axios.post(`${backendUrl}/usersCrud/createUser`, {
         Email: email,
         Name: name,
         PhoneNumber: phoneNumber,
       })
       if (createUserResponse.status === 200) {
-        const createAuthResponse = await axios.post("http://localhost:2000/users/", {
-          email,
-          password,
+        const createAuthResponse = await axios.post(`${backendUrl}/users/`, {
+          email: email,
+          password: password,
           position: "user",
         })
+        // console.log(createAuthResponse);
         if (createAuthResponse.status === 200) {
           toast.success("Signup successful!")
           navigate("/landing")
