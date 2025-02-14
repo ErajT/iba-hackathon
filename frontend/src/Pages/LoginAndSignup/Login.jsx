@@ -1,3 +1,5 @@
+
+
 // "use client"
 
 // import { useState, useEffect } from "react"
@@ -98,7 +100,7 @@
 //   }
 
 //   return (
-//     <div className="relative flex h-screen w-full items-center justify-center overflow-hidden bg-[#f0f0f0]">
+//     <div className="relative flex h-screen w-full items-center justify-center overflow-hidden bg-gradient-to-br from-[#2b6777] to-[#52ab98]">
 //       <ToastContainer />
 //       <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJmb2ciIHg9IjAiIHk9IjAiIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48Y2lyY2xlIGN4PSIxNTAiIGN5PSIxNTAiIHI9IjIwMCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgZnJvbT0iMCIgdG89IjIwMCIgZHVyPSIxMHMiIHJlcGVhdENvdW50PSJpbmRlZmluaXRlIi8+PC9jaXJjbGU+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2ZvZykiLz48L3N2Zz4=')] opacity-50 mix-blend-overlay"></div>
 //       <motion.div
@@ -347,6 +349,8 @@ import axios from "axios"
 import { toast, ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import { useNavigate } from "react-router-dom"
+import { backendUrl } from "@/components/constants"
+import cookie from "js-cookie";
 
 export default function LoginSignup() {
   const [activeTab, setActiveTab] = useState("login")
@@ -390,13 +394,30 @@ export default function LoginSignup() {
     e.preventDefault()
     setIsLoading(true)
     try {
-      const response = await axios.post(`http://localhost:2000/users/login`, {
+      const response = await axios.post(`${backendUrl}/users/login`, {
         email,
         password,
       })
+      console.log(response)
       if (response.status === 200) {
+        cookie.set("userDetails", JSON.stringify(response.data), {
+          expires: 7, // Cookie will expire in 7 days
+          secure: true, // Ensure secure cookie usage in HTTPS
+        });
+        console.log(response.data.position)
+        cookie.set("position", JSON.stringify(response.data.position), {
+          expires: 7, // Cookie will expire in 7 days
+          secure: true, // Ensure secure cookie usage in HTTPS
+        });
         toast.success("Login successful!")
-        navigate("/landing")
+        if(response.data.position == "user")
+        {
+          navigate("/landing")
+        }
+        else if(response.data.position == "admin")
+        {
+          navigate("/landing")
+        }
       }
     } catch (error) {
       toast.error("Login failed. Please check your credentials.")
@@ -409,17 +430,18 @@ export default function LoginSignup() {
     e.preventDefault()
     setIsLoading(true)
     try {
-      const createUserResponse = await axios.post("http://localhost:2000/usersCrud/createUser", {
+      const createUserResponse = await axios.post(`${backendUrl}/usersCrud/createUser`, {
         Email: email,
         Name: name,
         PhoneNumber: phoneNumber,
       })
       if (createUserResponse.status === 200) {
-        const createAuthResponse = await axios.post("http://localhost:2000/users/", {
-          email,
-          password,
+        const createAuthResponse = await axios.post(`${backendUrl}/users/`, {
+          email: email,
+          password: password,
           position: "user",
         })
+        console.log(createAuthResponse);
         if (createAuthResponse.status === 200) {
           toast.success("Signup successful!")
           navigate("/landing")
@@ -433,7 +455,7 @@ export default function LoginSignup() {
   }
 
   return (
-    <div className="relative flex h-screen w-full items-center justify-center overflow-hidden bg-gradient-to-br from-[#2b6777] to-[#52ab98]">
+    <div className="relative flex h-screen w-full items-center justify-center overflow-hidden bg-[#f0f0f0]">
       <ToastContainer />
       <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJmb2ciIHg9IjAiIHk9IjAiIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48Y2lyY2xlIGN4PSIxNTAiIGN5PSIxNTAiIHI9IjIwMCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgZnJvbT0iMCIgdG89IjIwMCIgZHVyPSIxMHMiIHJlcGVhdENvdW50PSJpbmRlZmluaXRlIi8+PC9jaXJjbGU+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2ZvZykiLz48L3N2Zz4=')] opacity-50 mix-blend-overlay"></div>
       <motion.div

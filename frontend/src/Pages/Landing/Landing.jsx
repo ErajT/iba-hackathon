@@ -94,7 +94,7 @@ function UserHome() {
                 <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[#c8d8e4] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
               </Link>
             ))}
-            <Link to="/login1">
+            <Link to="/login">
               <Button className="bg-[#2b6777] hover:bg-[#3a7d8f] text-white group relative overflow-hidden">
                 <span className="relative z-10">Login</span>
                 <ChevronRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" />

@@ -5,6 +5,12 @@ import styled, { createGlobalStyle } from "styled-components";
 import UserHome from "./Pages/Home/UserHome";
 import Landing from "./Pages/Landing/Landing";
 import Login from "./Pages/LoginAndSignup/Login";
+import { Layout } from "./components/Layout";
+import { AdminHome } from "./Pages/Home/AdminHome";
+import UsersCRUD from "./Pages/UserMgt/UsersCRUD";
+import RoleAuthorizer from "./components/RoleAuthorizer";
+import { Toaster } from "react-hot-toast";
+import { ToastContainer } from "react-toastify";
 
 const GlobalStyle = createGlobalStyle`
 //   * {
@@ -34,11 +40,40 @@ const AppLayout = () => {
   return (
     <AppContainer className="text-gray-900 dark:text-white">
       <MainContent>
+        <Toaster toastOptions={{
+          className:"dark:bg-gray-800 dark:text-gray-50 "
+        }} />
+        
         <Routes>
-          <Route path="/" element={<UserHome/>} />
-          {/* <Route path="/login" element={<Login />} /> */}
-          <Route path="/login1" element={<Login />} />
-          <Route path="/landing" element={<Landing />} />
+
+          {/* ROutes without layout */}
+          <Route path="/login" element={<Login />} />       
+          <Route path="/" element={<Landing />} />
+
+
+        <Route element={<Layout />}>
+
+          <Route path="/home-admin" element={<AdminHome/>} />
+          
+          
+          <Route path="/home" element={<UserHome/>} />
+        
+        
+        
+          <Route element={<RoleAuthorizer allowedRole="user" />}>
+          {/* protected routes for user */}
+          </Route>
+          <Route element={<RoleAuthorizer allowedRole="admin" />}>
+          <Route path="/admin/users" element={<UsersCRUD />} />
+          {/* protected routes for admin */}
+          </Route>
+        
+        
+        
+        </Route>     
+  
+     
+
         </Routes>
       </MainContent>
     </AppContainer>

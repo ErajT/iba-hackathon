@@ -1,0 +1,25 @@
+@import "tailwindcss";
+@tailwind utilities;
+
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+
+    .btn-green {
+      @apply bg-[#1a3e48] text-white font-semibold px-6 py-2 rounded-lg transition duration-300 hover:bg-[#59afad] active:bg-green-800 focus:outline-none focus:ring-2 focus:ring-green-400;
+      
+    }
+    .btn-white {
+      @apply border-2 border-green-800 font-semibold px-6 py-2 rounded-lg transition duration-300 hover:bg-[#59afad] active:bg-green-800 focus:outline-none focus:ring-2 focus:ring-green-400;
+      
+    }
+    .btn-green:hover{
+      @apply cursor-pointer
+    }
+    .modalInp{
+        @apply w-[85%] rounded-lg shadow-2xs p-2 border-1 border-gray-400 dark:outline-amber-50 ;
+    }
+    
+  
+
+
