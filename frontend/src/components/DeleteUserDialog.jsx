@@ -1,7 +1,7 @@
 import { DialogTrigger } from '@radix-ui/react-dialog'
 import axios from 'axios'
 import React from 'react'
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 
 function DeleteUserDialog({userId,onUpdate}) {
 

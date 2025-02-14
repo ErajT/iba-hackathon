@@ -43,10 +43,10 @@ useEffect(()=>{
     User Management</p>
       
     </div>
-        <Table className="border-1 dark:border-gray-50 border-[#0088ae]  ">
-  <TableCaption>A list of all the users.</TableCaption>
+        <Table className="border-2 dark:border-gray-50 border-[#023645]  ">
+  <TableCaption className="font-semibold">A list of all the users.</TableCaption>
   <TableHeader >
-    <TableRow className="font-extrabold border-1 dark:border-gray-50 border-[#0088ae]">
+    <TableRow className="font-extrabold border-1 dark:border-gray-50 border-[#023645]">
       <TableHead className="w-[100px] ">User Id</TableHead>
       <TableHead>Name</TableHead>
       <TableHead>Email</TableHead>
@@ -96,7 +96,7 @@ const TableRowWrapper = ({id,name,email,phone,role,onUpdate })=>{
 
 
 
-    return  <TableRow className="border-1 dark:border-gray-50 border-[#0088ae]">
+    return  <TableRow className="border-1 dark:border-gray-50 border-[#023645]">
     <TableCell className="font-medium ">{id}</TableCell>
     <TableCell>{name}</TableCell>
     <TableCell>{email}</TableCell>

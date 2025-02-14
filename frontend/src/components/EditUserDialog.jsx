@@ -2,7 +2,8 @@ import React, { useEffect,useState } from 'react'
 import "./components.css"
 import axios from 'axios'
 import { DialogTrigger } from '@radix-ui/react-dialog'
-import { toast, ToastContainer } from 'react-toastify'
+import toast from 'react-hot-toast';
+
 
 
 function EditUserDialog({id,name,email,phone,role,onUpdate,isUpdate}) {

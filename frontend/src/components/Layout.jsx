@@ -16,7 +16,7 @@ export function Layout({ children }) {
     },[sidebarOpen])
   return (
     <SidebarProvider open={sidebarOpen} onOpenChange={(o)=>setSidebarOpen(o)}>
-      <div className={`grid h-screen w-full ${sidebarOpen ? 'grid-cols-[250px_1fr]' : 'sm:grid-cols-[1px_1fr] grid-cols-[250px_1fr]'} bg-[#d2ebf3] text-[#003644] dark:text-gray-50 dark:bg-[#08242c]`}>
+      <div className={`grid h-screen w-full ${sidebarOpen ? 'grid-cols-[250px_1fr]' : 'sm:grid-cols-[1px_1fr] grid-cols-[250px_1fr]'} bg-[#e4e4e4] text-[#003644] dark:text-gray-50 dark:bg-[#08242c]`}>
         {/* Sidebar Wrapper */}
         <SideBarWrapper className="bg-gray-800 text-white" sidebarOpen={sidebarOpen} />
 
