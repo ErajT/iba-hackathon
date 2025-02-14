@@ -5,6 +5,7 @@ import styled, { createGlobalStyle } from "styled-components";
 import UserHome from "./Pages/Home/UserHome";
 import Landing from "./Pages/Landing/Landing";
 import Login from "./Pages/LoginAndSignup/Login";
+import RoleAuthorizer from "./components/RoleAuthorizer";
 
 const GlobalStyle = createGlobalStyle`
 //   * {
@@ -39,6 +40,11 @@ const AppLayout = () => {
           {/* <Route path="/login" element={<Login />} /> */}
           <Route path="/login1" element={<Login />} />
           <Route path="/landing" element={<Landing />} />
+          {/* Protected Routes for trainee */}
+          <Route element={<RoleAuthorizer allowedRole="user" />}>
+          </Route>
+          <Route element={<RoleAuthorizer allowedRole="admin" />}>
+          </Route>
         </Routes>
       </MainContent>
     </AppContainer>

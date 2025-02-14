@@ -13,6 +13,7 @@ import { toast, ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import { useNavigate } from "react-router-dom"
 import { backendUrl } from "@/components/constants"
+import cookie from "js-cookie";
 
 export default function LoginSignup() {
   const [activeTab, setActiveTab] = useState("login")
@@ -60,9 +61,26 @@ export default function LoginSignup() {
         email,
         password,
       })
+      console.log(response)
       if (response.status === 200) {
+        cookie.set("userDetails", JSON.stringify(response.data), {
+          expires: 7, // Cookie will expire in 7 days
+          secure: true, // Ensure secure cookie usage in HTTPS
+        });
+        console.log(response.data.position)
+        cookie.set("position", JSON.stringify(response.data.position), {
+          expires: 7, // Cookie will expire in 7 days
+          secure: true, // Ensure secure cookie usage in HTTPS
+        });
         toast.success("Login successful!")
-        navigate("/landing")
+        if(response.data.position == "user")
+        {
+          navigate("/landing")
+        }
+        else if(response.data.position == "admin")
+        {
+          navigate("/landing")
+        }
       }
     } catch (error) {
       toast.error("Login failed. Please check your credentials.")
