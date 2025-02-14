@@ -45,6 +45,7 @@ const AppLayout = () => {
           </Route>
           <Route element={<RoleAuthorizer allowedRole="admin" />}>
           </Route>
+          <Route path="*" element={<div>Page Not Found</div>} />
         </Routes>
       </MainContent>
     </AppContainer>
