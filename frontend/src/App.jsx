@@ -9,6 +9,7 @@ import { Layout } from "./components/Layout";
 import { AdminHome } from "./Pages/Home/AdminHome";
 import UsersCRUD from "./Pages/UserMgt/UsersCRUD";
 import CreateCollab from "./Pages/CreateCollab/CreateCollab";
+import ViewCollectionp from "./Pages/CreateCollab/ViewCollectionp";
 import RoleAuthorizer from "./components/RoleAuthorizer";
 import { Toaster } from "react-hot-toast";
 import { ToastContainer } from "react-toastify";
@@ -61,8 +62,8 @@ const AppLayout = () => {
           <Route path="/create" element={<UserHome/>} />
           <Route path="/view-public" element={<VIewPublic />} />
           <Route path="/collection/:id" element={<IndividualCollection />} />
-          <Route path="/file/:id" element={<UserHome/>} />
-          <Route path="/flashcard " element={<FlashcardPage/>} />
+          <Route path="/file/:materialId" element={<ViewCollectionp/>} />
+          <Route path="/flashcard" element={<FlashcardPage/>} />
         
           <Route element={<RoleAuthorizer allowedRole="user" />}>
           {/* protected routes for user */}

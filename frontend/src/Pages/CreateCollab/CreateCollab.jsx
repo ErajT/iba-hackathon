@@ -1,8 +1,10 @@
-
 "use client"
 
 import * as React from "react"
 import { Check, Clock, Mail, Plus, Upload, X } from "lucide-react"
+import axios from "axios"
+import { useCookies } from "react-cookie"
+import { useToast } from "@/hooks/use-toast"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
@@ -11,7 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-// import { useToast } from "@/components/ui/use-toast"
+import { Switch } from "@/components/ui/switch"
 
 // Dummy existing users
 const existingUsers = [
@@ -21,15 +23,23 @@ const existingUsers = [
 ]
 
 export default function AddCollection() {
-  // const { toast } = useToast()
+  const { toast } = useToast()
+  const [cookies] = useCookies(["userDetails"])
   const [title, setTitle] = React.useState("")
   const [description, setDescription] = React.useState("")
+  const [isPublic, setIsPublic] = React.useState(true)
+  const [topics, setTopics] = React.useState("")
   const [selectedFile, setSelectedFile] = React.useState(null)
   const [collaborators, setCollaborators] = React.useState([])
   const [newCollaborator, setNewCollaborator] = React.useState({
     name: "",
     email: "",
   })
+  const [collectionId, setCollectionId] = React.useState(null)
+
+  React.useEffect(() => {
+    console.log("User Details:", cookies.userDetails)
+  }, [cookies.userDetails])
 
   const handleFileUpload = (e) => {
     const file = e.target.files?.[0]
@@ -50,7 +60,7 @@ export default function AddCollection() {
     }
   }
 
-  const handleAddNewCollaborator = () => {
+  const handleAddNewCollaborator = async () => {
     if (newCollaborator.name && newCollaborator.email) {
       // Check if email is already in use
       if (collaborators.find((c) => c.email === newCollaborator.email)) {
@@ -62,30 +72,130 @@ export default function AddCollection() {
         return
       }
 
-      // Add new collaborator with pending status
-      setCollaborators([
-        ...collaborators,
-        {
-          id: `pending-${Date.now()}`,
-          name: newCollaborator.name,
-          email: newCollaborator.email,
-          status: "pending",
-        },
-      ])
+      try {
+        const response = await axios.post(
+          "/api/invite",
+          {
+            email: newCollaborator.email,
+            name: newCollaborator.name,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${cookies.token}`,
+            },
+          },
+        )
+        // Add new collaborator with pending status
+        setCollaborators([
+          ...collaborators,
+          {
+            id: response.data.id,
+            name: newCollaborator.name,
+            email: newCollaborator.email,
+            status: "pending",
+          },
+        ])
 
-      // Simulate sending invitation email
-      toast({
-        title: "Invitation Sent",
-        description: `An invitation email has been sent to ${newCollaborator.email}`,
-      })
+        // Simulate sending invitation email
+        toast({
+          title: "Invitation Sent",
+          description: `An invitation email has been sent to ${newCollaborator.email}`,
+        })
 
-      // Reset form
-      setNewCollaborator({ name: "", email: "" })
+        // Reset form
+        setNewCollaborator({ name: "", email: "" })
+      } catch (error) {
+        console.error("Error sending invitation:", error)
+        toast({
+          title: "Error",
+          description: "Failed to send invitation. Please try again later.",
+          variant: "destructive",
+        })
+      }
     }
   }
 
   const handleRemoveCollaborator = (collaborator) => {
     setCollaborators(collaborators.filter((c) => c.id !== collaborator.id))
+  }
+
+  const handleCreateCollection = async () => {
+    try {
+      // Extract UserID from cookies
+      const userDetails =
+        typeof cookies.userDetails === "string" ? JSON.parse(cookies.userDetails) : cookies.userDetails
+      console.log("User Details:", userDetails)
+      const userId = userDetails.user.UserID
+      console.log("User ID:", userId)
+
+      if (!userId) {
+        throw new Error("User ID not found in cookie")
+      }
+
+      // First API call to create the collection
+      const createCollectionResponse = await axios.post("http://localhost:2000/collection/createCollection", {
+        UserID: userId,
+        Name: title,
+        Description: description,
+        IsPublic: isPublic,
+        Topics: topics.split(",").map((topic) => topic.trim()),
+      })
+
+      const newCollectionId = createCollectionResponse.data.collectionId
+      setCollectionId(newCollectionId)
+
+      toast({
+        title: "Success",
+        description: "Collection created successfully!",
+      })
+    } catch (error) {
+      console.error("Error creating collection:", error)
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to create collection. Please try again.",
+        variant: "destructive",
+      })
+    }
+  }
+
+  const handleUploadPDF = async () => {
+    if (!selectedFile || !collectionId) {
+      toast({
+        title: "Error",
+        description: "Please select a file and create a collection first.",
+        variant: "destructive",
+      })
+      return
+    }
+
+    try {
+      const userDetails =
+        typeof cookies.userDetails === "string" ? JSON.parse(cookies.userDetails) : cookies.userDetails
+      const userId = userDetails.user.UserID
+
+      if (!userId) {
+        throw new Error("User ID not found in cookie")
+      }
+
+      const formData = new FormData()
+      formData.append("CollectionID", collectionId)
+      formData.append("CreatedByID", userId)
+      formData.append("File", selectedFile)
+
+      await axios.post("http://localhost:2000/material/addMaterial", formData)
+
+      toast({
+        title: "Success",
+        description: "PDF uploaded successfully!",
+      })
+    } catch (error) {
+      console.error("Error uploading PDF:", error)
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to upload PDF. Please try again.",
+        variant: "destructive",
+      })
+    }
   }
 
   return (
@@ -114,23 +224,60 @@ export default function AddCollection() {
               rows={4}
             />
           </div>
+          <div className="space-y-2">
+            <Label htmlFor="topics">Topics</Label>
+            <Input
+              id="topics"
+              value={topics}
+              onChange={(e) => setTopics(e.target.value)}
+              placeholder="Enter topics separated by commas"
+            />
+          </div>
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="public"
+              checked={isPublic}
+              onCheckedChange={setIsPublic}
+              style={{ backgroundColor: isPublic ? "#2b6777" : "#ccc" }}
+            />
+            <Label htmlFor="public">Public</Label>
+          </div>
         </div>
+
+        {/* Create Collection Button */}
+        <Button
+          className="w-full"
+          size="lg"
+          onClick={handleCreateCollection}
+          style={{ backgroundColor: "#2b6777", color: "#fff" }}
+        >
+          Create Collection
+        </Button>
 
         {/* File Upload */}
         <Card>
           <CardContent className="p-6">
             <div className="space-y-4">
-              <Label>Files</Label>
+              <Label>Upload PDF</Label>
               <div className="flex items-center gap-4">
                 <Button asChild variant="outline">
                   <label className="cursor-pointer">
                     <Upload className="mr-2 h-4 w-4" />
-                    Upload PDF
+                    Select PDF
                     <input type="file" accept=".pdf" className="hidden" onChange={handleFileUpload} />
                   </label>
                 </Button>
                 {selectedFile && <span className="text-sm text-muted-foreground">{selectedFile.name}</span>}
               </div>
+              {selectedFile && (
+                <Button
+                  className="w-full"
+                  onClick={handleUploadPDF}
+                  style={{ backgroundColor: "#2b6777", color: "#fff" }}
+                >
+                  Upload PDF
+                </Button>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -271,12 +418,8 @@ export default function AddCollection() {
             </div>
           </CardContent>
         </Card>
-
-        {/* Submit Button */}
-        <Button className="w-full" size="lg">
-          Create Collection
-        </Button>
       </div>
     </div>
   )
 }
+

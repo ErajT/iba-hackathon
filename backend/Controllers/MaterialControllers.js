@@ -4,7 +4,6 @@ const zlib = require('zlib');
 const { RecursiveCharacterTextSplitter } = require("langchain/text_splitter");
 const { HfInference } = require("@huggingface/inference");
 const { Pinecone } = require('@pinecone-database/pinecone');
-// const {ServerlessSpec} = require('@pinecone-database/pinecone');
 
 const postVectorsForMaterial = async (materialId) => {
     try {
@@ -202,11 +201,11 @@ exports.getMaterialsByCollectionID = async (req, res) => {
 exports.getMaterialByMaterialID = async (req, res) => {
     const { materialId } = req.params;
 
+    // Query to get material details along with CreatedByName
     const getMaterialSQL = `
         SELECT 
             m.MaterialID, 
             m.Name, 
-            m.Description, 
             m.File, 
             m.CollectionID, 
             m.CreatedByID, 
@@ -216,7 +215,16 @@ exports.getMaterialByMaterialID = async (req, res) => {
         WHERE m.MaterialID = ?
     `;
 
+    // Query to get comma-separated list of CollaboratorIDs
+    const getCollaboratorsSQL = `
+        SELECT 
+            GROUP_CONCAT(CollaboratorID) AS CollaboratorIDs
+        FROM collaborator
+        WHERE CollectionID = ?
+    `;
+
     try {
+        // Get Material Details
         const material = await Qexecution.queryExecute(getMaterialSQL, [materialId]);
 
         if (material.length === 0) {
@@ -226,6 +234,10 @@ exports.getMaterialByMaterialID = async (req, res) => {
             });
         }
 
+        // Get Collaborator IDs as comma-separated list
+        const collaborators = await Qexecution.queryExecute(getCollaboratorsSQL, [materialId]);
+        const collaboratorIDs = collaborators[0].CollaboratorIDs || ""; // If no collaborators, return empty string
+
         // Decompress the file buffer before returning
         if (material[0].File) {
             material[0].File = zlib.gunzipSync(material[0].File);
@@ -234,7 +246,11 @@ exports.getMaterialByMaterialID = async (req, res) => {
         res.status(200).send({
             status: "success",
             message: "Material retrieved successfully.",
-            material: material[0]
+            material: {
+                ...material[0],
+                CreatedByID: material[0].CreatedByID,   // Explicitly adding CreatedByID
+                CollaboratorIDs: collaboratorIDs        // Adding Collaborator IDs
+            }
         });
     } catch (err) {
         console.error("Error getting material:", err.message);
