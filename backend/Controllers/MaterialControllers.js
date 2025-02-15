@@ -1,12 +1,15 @@
 const Qexecution = require("./query");
-const constants = require('./constants');
+// const constants = require('./constants');
 const zlib = require('zlib');
+const { RecursiveCharacterTextSplitter } = require("langchain/text_splitter");
+const { HfInference } = require("@huggingface/inference");
+const { Pinecone } = require('@pinecone-database/pinecone');
 
 const postVectorsForMaterial = async (materialId) => {
     try {
         // Retrieve material from DB
         const getMaterialSQL = `
-            SELECT File 
+            SELECT File, Name 
             FROM Material 
             WHERE MaterialID = ?
         `;
@@ -26,43 +29,49 @@ const postVectorsForMaterial = async (materialId) => {
 
         // Split text into chunks
         const textSplitter = new RecursiveCharacterTextSplitter({
-            chunkSize: 500,
-            separators: ["\n\n", "\n", " ", ""],
+            chunkSize: 10000,
             chunkOverlap: 50
         });
 
         const output = await textSplitter.createDocuments([text]);
         console.log("Total Chunks:", output.length);
 
-        // Initialize Hugging Face and Pinecone
-        const hf = new HfInference(constants.HF_TOKEN);
-        const pc = new Pinecone({
-            apiKey: constants.PC_TOKEN
-        });
+        const hf = new HfInference("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")
+
+        // // Initialize Hugging Face Embeddings
+        // const hf = new HuggingFaceInferenceEmbeddings({
+        //     apiKey: "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",
+        //     model: "sentence-transformers/all-MiniLM-L6-v2"
+        // });
 
         const vecArr = [];
 
-        // Process each chunk
-        for (let i = 0; i < output.length; i++) {
-            let content = output[i].pageContent;
-            let obj = {
-                id: `${fileName}-${i+1}`,
-                metadata: { text: content }
-            };
+        const pc = new Pinecone({
+            apiKey:"pcsk_FmhEX_Pjh4gScmq1xnmiMEQ315sd9EtSu25sUfMwy8FLF7kfZcEmKeqkpG7HfWZ687CBy"
+        })
 
-            // Get vector embeddings from Hugging Face
+        for(let i=0;i<output.length;i++){
+            let content = output[i].pageContent
+            let obj ={
+                    id:`${i+1}`,
+                    metadata:{text: content}
+            }
+            console.log("processing output node , ",output[i])
             let value = await hf.featureExtraction({
-                model: "sentence-transformers/all-MiniLM-L6-v2",
-                inputs: content
-            });
-
+                model:"sentence-transformers/all-MiniLM-L6-v2",
+                inputs:content
+            })
             obj.values = value;
+
             vecArr.push(obj);
+            
         }
 
-        // Upload vectors to Pinecone
-        const index = pc.Index("exoplanetarium");
-        const data = await index.namespace('nsac').upsert(vecArr);
+        const index = pc.Index("learnflow");
+
+        console.log(vecArr)
+
+        const data = await index.namespace('nsac').upsert(vecArr)
 
         console.log("Vectors posted successfully:", data);
         return data;
@@ -75,10 +84,11 @@ const postVectorsForMaterial = async (materialId) => {
 
 
 exports.createMaterial = async (req, res) => {
-    const { CollectionID, CreatedByID } = req.body;
-    
+    const {  CollectionID, CreatedByID } = req.body;
     // Get the file from req.file
-    const File = req.file ? req.file.buffer : null;
+    const TimeC = new Date();
+    const File = req.file;
+    console.log(File)
 
     if (!File) {
         return res.status(400).send({
@@ -89,25 +99,26 @@ exports.createMaterial = async (req, res) => {
 
     try {
         // Compress the file buffer
-        const compressedFile = zlib.gzipSync(File);
+        const compressedFile = zlib.gzipSync(File.buffer);
+
+        console.log("1 done")
 
         const createMaterialSQL = `
-            INSERT INTO Material (File, CollectionID, CreatedByID)
-            VALUES (?, ?, ?)
+            INSERT INTO Material (Name, File, CollectionID, CreatedByID, TimeCreated)
+            VALUES (?, ?, ?, ?, ?)
         `;
 
-        const result = await Qexecution.queryExecute(createMaterialSQL, [compressedFile, CollectionID, CreatedByID]);
-
+        const result = await Qexecution.queryExecute(createMaterialSQL, [File.originalname, compressedFile, CollectionID, CreatedByID, TimeC]);
+        console.log("2 done")
         const newMaterialId = result.insertId;
 
         // Call postVectorsForMaterial directly as a function
         const vectorResult = await postVectorsForMaterial(newMaterialId);
-
+        console.log("3 done")
         res.status(200).send({
             status: "success",
             message: "Material created and vectors posted successfully.",
             materialId: newMaterialId,
-            vectorResult: vectorResult
         });
 
     } catch (err) {

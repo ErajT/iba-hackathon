@@ -7,6 +7,7 @@ const userRouter = require('./api/users/user.router');
 const UsersRouter = require('./Routes/UsersRouter');
 const materialRouter = require('./Routes/MaterialRouter');
 const collectionRouter = require('./Routes/CollectionRouter');
+const FlashCardRouter = require('./Routes/FlashCardRouter');
 
 let app = express();
 app.options('*', cors()); // Allow preflight requests
@@ -41,6 +42,7 @@ app.use('/collection', collectionRouter);
 app.use('/material', materialRouter);
 app.use('/users', userRouter);
 app.use('/usersCrud', UsersRouter);
+app.use('/flashcard', FlashCardRouter);
 
 
 
