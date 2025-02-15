@@ -8,9 +8,6 @@ router.route('/createCollection')
 router.route('/getCollectionById/:id')
     .get(CollectionHandler.getCollectionById);
 
-router.route('/updateCollection')
-    .patch(CollectionHandler.updateCollection);
-
 router.route('/deleteCollection/:id')
     .delete(CollectionHandler.deleteCollection);
 

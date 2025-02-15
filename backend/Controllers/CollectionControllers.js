@@ -64,39 +64,6 @@ exports.getCollectionById = async (req, res) => {
     }
 };
 
-// Update collection
-exports.updateCollection = async (req, res) => {
-    const {  HasCollaborators } = req.body;
-
-    const updateCollectionSQL = `
-        UPDATE Collection 
-        SET Name = ?, Description = ?, IsPublic = ?, HasCollaborators = ?
-        WHERE CollectionID = ?
-    `;
-
-    try {
-        const result = await Qexecution.queryExecute(updateCollectionSQL, [Name, Description, IsPublic, HasCollaborators, CollectionID]);
-
-        if (result.affectedRows === 0) {
-            return res.status(404).send({
-                status: "fail",
-                message: "Collection not found or no changes made."
-            });
-        }
-
-        res.status(200).send({
-            status: "success",
-            message: "Collection updated successfully.",
-        });
-    } catch (err) {
-        console.error("Error updating collection:", err.message);
-        res.status(500).send({
-            status: "fail",
-            message: "Error updating collection.",
-            error: err.message,
-        });
-    }
-};
 
 // Delete collection
 exports.deleteCollection = async (req, res) => {
