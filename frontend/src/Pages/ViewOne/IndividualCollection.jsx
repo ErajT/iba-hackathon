@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { format, isValid, parseISO } from 'date-fns'
 import { File, Upload, Users, Info, Plus, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -8,6 +8,10 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { UploadModal,FileItem,ContributorAvatar } from './IndComponents'
+import axios from 'axios'
+import { useParams } from 'react-router-dom'
+import toast from 'react-hot-toast'
+import EditCollection from './EditCollection'
 
 
 
@@ -28,7 +32,7 @@ const collectionData = {
   ]
 }
 
-const formatDate = (dateString) => {
+export const formatDate = (dateString) => {
   const date = parseISO(dateString)
   return isValid(date) ? format(date, 'MMM d, yyyy') : 'Invalid Date'
 }
@@ -38,12 +42,35 @@ const formatDate = (dateString) => {
 
 function IndividualCollection() {
     const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
-      
+      const [collId, setCollId] = useState(useParams().id)
+
+const [collData, setCollData] = useState({})
+
+
+  useEffect(()=>{
+    const fetch = async () =>{
+
+
+      try{
+        const res = await axios.get(`http://localhost:2000/collection/getCollectionById/${collId}`)
+        console.log(res.data.collection)
+
+        setCollData({...res.data.collection})
+
+      }
+      catch(e){
+        console.log(e)
+        toast.error(e.data)
+      }
+    }
+    fetch()
+  },[])
+
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-gray-900 py-2 dark:text-gray-100">{collectionData.name}</h1>
+        <h1 className="text-3xl font-bold text-gray-900 py-2 dark:text-gray-100">{collData.Name}</h1>
         <Button onClick={() => setIsUploadModalOpen(true) } className="bg-[#091e24] dark:bg-[#22424a] text-gray-100 hover:cursor-pointer flex items-base py-0 ">
           <Plus className="h-4 w-4 mr-2 "  /> Add File
         </Button>
@@ -54,9 +81,9 @@ function IndividualCollection() {
           <CardTitle className="text-lg">Files</CardTitle>
         </CardHeader>
         <CardContent>
-          {collectionData.files.map((file, index) => (
+          {collData.length>0?collData.files.map((file, index) => (
             <FileItem key={index} {...file} />
-          ))}
+          )):"No Files Uploaded Yet"}
         </CardContent>
       </Card>
 
@@ -81,21 +108,24 @@ function IndividualCollection() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
-            <p className="text-sm">{collectionData.description}</p>
+            <p className="text-sm">{collData.Description}</p>
             <p className="text-sm">
               <span className="font-medium">Owner:</span> {collectionData.owner}
             </p>
             <p className="text-sm">
-              <span className="font-medium">Created:</span> {formatDate(collectionData.createdDate)}
+              <span className="font-medium">Created:</span> {collData.TimeCreated?formatDate(collData.TimeCreated):""}
             </p>
           </CardContent>
         </Card>
       </div>
 
-      <UploadModal isOpen={isUploadModalOpen} onClose={() => setIsUploadModalOpen(false)} className="dark:bg-gray-800" />
+    <EditCollection isOpen={isUploadModalOpen} onClose={() => setIsUploadModalOpen(false)} /> 
+      {/* <UploadModal isOpen={isUploadModalOpen} onClose={() => setIsUploadModalOpen(false)} className="dark:bg-gray-800" /> */}
     </div>
   )
   
 }
+
+//need list of collaborators and list of files (file id, name, createdBy, date)
 
 export default IndividualCollection

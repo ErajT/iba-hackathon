@@ -39,20 +39,49 @@ exports.getCollectionById = async (req, res) => {
         SELECT * FROM Collection WHERE CollectionID = ?
     `;
 
+    const getFilesSQL = `SELECT 
+    u.Name AS CreatedBy,
+    m.Name,
+    m.Description,
+    m.TimeCreated,
+    m.File
+FROM 
+    Material m
+JOIN 
+    user u ON m.CreatedByID = u.UserID
+WHERE 
+    m.CollectionID = ?`
+
+
+const getCollaborators = `
+SELECT u.Name
+FROM Collaborator c
+JOIN user u ON c.UserID = u.UserID
+WHERE c.CollectionID = ?;
+
+`
+
     try {
         const collection = await Qexecution.queryExecute(getCollectionSQL, [id]);
 
+        const files = await Qexecution.queryExecute(getFilesSQL,[id])
+        const collaborators = await Qexecution.queryExecute(getCollaborators,[id])
+
+        console.log(files,collaborators)
+
+        
         if (collection.length === 0) {
             return res.status(404).send({
                 status: "fail",
                 message: "Collection not found."
             });
         }
+        const data = {...collection[0],files,collaborators}
 
         res.status(200).send({
             status: "success",
             message: "Collection retrieved successfully.",
-            collection: collection[0],
+            collection: data,
         });
     } catch (err) {
         console.error("Error getting collection:", err.message);

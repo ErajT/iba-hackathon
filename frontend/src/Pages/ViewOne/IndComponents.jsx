@@ -1,31 +1,31 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { format, isValid, parseISO } from 'date-fns'
-import { File, Upload, Users, Info, Plus, X } from 'lucide-react'
+import { DeleteIcon, File, } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Link } from 'react-router-dom'
 
 
 
-const formatDate = (dateString) => {
+export const formatDate = (dateString) => {
     const date = parseISO(dateString)
     return isValid(date) ? format(date, 'MMM d, yyyy') : 'Invalid Date'
   }
 
-const FileItem = ({ name, uploadDate, uploadedBy }) => (
+const FileItem = ({ Name, CreatedAt, CreatedBy }) => (
     <div className="flex items-center justify-between py-3 border-b last:border-b-0 ">
       <div className="flex items-center space-x-3">
         <File className="h-5 w-5 text-[#125667]" />
         <Link to={"/file/:1"}>
-        <span className="font-medium hover:cursor-pointer hover:underline">{name}</span>
+        <span className="font-medium hover:cursor-pointer hover:underline">{Name}</span>
         
         </Link>
       </div>
       <div className="text-xs bread-words sm:w-36 w-24 text-gray-500 ">
-        {formatDate(uploadDate)} by {uploadedBy}
+        {formatDate(CreatedAt)} by {CreatedBy}
       </div>
     </div>
   )
@@ -48,8 +48,16 @@ const FileItem = ({ name, uploadDate, uploadedBy }) => (
         </DialogHeader>
         <div className="space-y-4 py-4">
           <div className="space-y-2">
-            <Label htmlFor="filename" className="space-y-2">File Name</Label>
+            <Label htmlFor="filename" className="space-y-2">Collection Name</Label>
             <Input id="filename" placeholder="Enter file name"  className="space-y-2"/>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="filename" className="space-y-2">Description</Label>
+            <Input id="filename" placeholder="Enter file name"  className="space-y-2"/>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="filename" className="space-y-2">Files</Label>
+            <span><p>File Name</p> <DeleteIcon /> </span>
           </div>
           <div className="space-y-2">
             <Label htmlFor="file">Select File</Label>
