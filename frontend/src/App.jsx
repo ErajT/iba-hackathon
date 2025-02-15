@@ -13,7 +13,13 @@ import ViewCollectionp from "./Pages/CreateCollab/ViewCollectionp";
 import RoleAuthorizer from "./components/RoleAuthorizer";
 import { Toaster } from "react-hot-toast";
 import { ToastContainer } from "react-toastify";
+<<<<<<< HEAD
 // import Test from "./Pages/Test";
+=======
+import Test from "./Pages/Test";
+import VIewPublic from "./Pages/ViewAll/VIewPublic";
+import IndividualCollection from "./Pages/ViewOne/IndividualCollection";
+>>>>>>> c016d356543b54e1444579b585166595bc8b1898
 
 const GlobalStyle = createGlobalStyle`
 //   * {
@@ -43,9 +49,7 @@ const AppLayout = () => {
   return (
     <AppContainer className="text-gray-900 dark:text-white">
       <MainContent>
-        <Toaster toastOptions={{
-          className:"dark:bg-gray-800 dark:text-gray-50 "
-        }} />
+        <Toaster />
         
         <Routes>
 
@@ -57,16 +61,28 @@ const AppLayout = () => {
         <Route element={<Layout />}>
 
         
+<<<<<<< HEAD
+=======
+          <Route path="/home" element={<UserHome/>} />
+          <Route path="/create" element={<UserHome/>} />
+          <Route path="/view-public" element={<VIewPublic />} />
+          <Route path="/collection/:id" element={<IndividualCollection />} />
+          <Route path="/file/:id" element={<UserHome/>} />
+>>>>>>> c016d356543b54e1444579b585166595bc8b1898
         
           <Route element={<RoleAuthorizer allowedRole="user" />}>
           {/* protected routes for user */}
 
+<<<<<<< HEAD
           <Route path="/home" element={<UserHome/>} />
           <Route path="/create" element={<CreateCollab/>} />
           <Route path="/view-public" element={<UserHome/>} />
           <Route path="/collection/:id" element={<UserHome/>} />
           <Route path="/file/:id" element={<ViewCollectionp/>} />
 
+=======
+
+>>>>>>> c016d356543b54e1444579b585166595bc8b1898
 
           </Route>
 
