@@ -4,6 +4,7 @@ const zlib = require('zlib');
 const { RecursiveCharacterTextSplitter } = require("langchain/text_splitter");
 const { HfInference } = require("@huggingface/inference");
 const { Pinecone } = require('@pinecone-database/pinecone');
+// const {ServerlessSpec} = require('@pinecone-database/pinecone');
 
 const postVectorsForMaterial = async (materialId) => {
     try {
@@ -38,44 +39,68 @@ const postVectorsForMaterial = async (materialId) => {
 
         const hf = new HfInference("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")
 
-        // // Initialize Hugging Face Embeddings
-        // const hf = new HuggingFaceInferenceEmbeddings({
-        //     apiKey: "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",
-        //     model: "sentence-transformers/all-MiniLM-L6-v2"
-        // });
-
         const vecArr = [];
 
         const pc = new Pinecone({
             apiKey:"pcsk_FmhEX_Pjh4gScmq1xnmiMEQ315sd9EtSu25sUfMwy8FLF7kfZcEmKeqkpG7HfWZ687CBy"
         })
 
-        for(let i=0;i<output.length;i++){
-            let content = output[i].pageContent
-            let obj ={
-                    id:`${i+1}`,
-                    metadata:{text: content}
-            }
-            console.log("processing output node , ",output[i])
-            let value = await hf.featureExtraction({
-                model:"sentence-transformers/all-MiniLM-L6-v2",
-                inputs:content
-            })
-            obj.values = value;
+        // Index Name Based on Material ID
+        const indexName = `learnflow-${materialId}`;
 
-            vecArr.push(obj);
-            
+        // Check if the index exists
+        try {
+            const indexInfo = await pc.describeIndex(indexName);
+            console.log(`Index ${indexName} already exists.`);
+        } catch (err) {
+            console.log(`Index ${indexName} does not exist. Creating now...`);
+
+            await pc.createIndex({
+                name: indexName,       
+                dimension: 384,           
+                metric:"cosine",
+                spec: {
+                    serverless: {
+                      cloud: 'aws',
+                      region: 'us-east-1'
+                    }
+                  },
+                  deletionProtection: 'disabled',
+                  tags: { environment: 'development' }, 
+            });
+        
+            console.log(`Index ${indexName} created successfully.`);
+            await new Promise(resolve => setTimeout(resolve, 3000));
         }
 
-        const index = pc.Index("learnflow");
+        // Generate embeddings for each chunk
+        for (let i = 0; i < output.length; i++) {
+            let content = output[i].pageContent;
+            let obj = {
+                id: `${materialId}-${i + 1}`,
+                metadata: { text: content }
+            };
 
-        console.log(vecArr)
+            console.log("Processing chunk:", i + 1);
 
-        const data = await index.namespace('nsac').upsert(vecArr)
+            let value = await hf.featureExtraction({
+                model: "sentence-transformers/all-MiniLM-L6-v2",
+                inputs: content
+            });
+
+            obj.values = value;
+            vecArr.push(obj);
+        }
+
+        const index = pc.Index(indexName);
+
+        console.log(vecArr);
+
+        // Upload vectors to Pinecone
+        const data = await index.namespace(materialId.toString()).upsert(vecArr);
 
         console.log("Vectors posted successfully:", data);
         return data;
-
     } catch (e) {
         console.error("Error posting vectors:", e.message);
         throw new Error(e.message);
