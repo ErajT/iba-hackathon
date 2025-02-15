@@ -142,7 +142,8 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 // pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`
 import { pdfjs } from "react-pdf";
 
-pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.js";
+// pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.js";
+pdfjs.GlobalWorkerOptions.workerSrc = '/pdfjs/pdf.worker.mjs';
 
 export default function PDFViewer() {
   const [numPages, setNumPages] = useState(null)
@@ -337,4 +338,3 @@ export default function PDFViewer() {
     </div>
   )
 }
-
