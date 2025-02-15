@@ -397,11 +397,12 @@ export default function LoginSignup() {
       const response = await axios.post(`${backendUrl}/users/login`, {
         email,
         password,
-        role,
       })
       console.log(response)
       if (response.status === 200) {
-        cookie.set("userDetails", JSON.stringify(response.data), {
+        // http://localhost:2000/usersCrud/getUserByEmail/erajtanweer2@gmail.com
+        const response1 = await axios.get(`${backendUrl}/usersCrud/getUserByEmail/${email}`);
+        cookie.set("userDetails", JSON.stringify(response1.data), {
           expires: 7, 
           secure: true, 
         });
@@ -560,7 +561,7 @@ export default function LoginSignup() {
                             </button>
                           </div>
                         </div>
-                        <div className="space-y-2">
+                        {/* <div className="space-y-2">
                           <Label htmlFor="role" className="text-sm font-medium text-gray-200">
                             Role
                           </Label>
@@ -577,7 +578,7 @@ export default function LoginSignup() {
                               <option value="faculty">Faculty</option>
                             </select>
                           </div>
-                        </div>
+                        </div> */}
                         <Button
                           type="submit"
                           className="w-full bg-gradient-to-r from-[#52ab98] to-[#c8d8e4] text-[#2b6777] font-semibold hover:opacity-90 transition-all duration-300 group cursor-pointer"

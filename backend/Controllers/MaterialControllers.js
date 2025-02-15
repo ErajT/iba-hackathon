@@ -1,12 +1,15 @@
 const Qexecution = require("./query");
-const constants = require('./constants');
+// const constants = require('./constants');
 const zlib = require('zlib');
+const { RecursiveCharacterTextSplitter } = require("langchain/text_splitter");
+const { HfInference } = require("@huggingface/inference");
+const { Pinecone } = require('@pinecone-database/pinecone');
 
 const postVectorsForMaterial = async (materialId) => {
     try {
         // Retrieve material from DB
         const getMaterialSQL = `
-            SELECT File 
+            SELECT File, Name 
             FROM Material 
             WHERE MaterialID = ?
         `;
@@ -26,31 +29,59 @@ const postVectorsForMaterial = async (materialId) => {
 
         // Split text into chunks
         const textSplitter = new RecursiveCharacterTextSplitter({
-            chunkSize: 500,
-            separators: ["\n\n", "\n", " ", ""],
+            chunkSize: 10000,
             chunkOverlap: 50
         });
 
         const output = await textSplitter.createDocuments([text]);
         console.log("Total Chunks:", output.length);
 
-        // Initialize Hugging Face and Pinecone
-        const hf = new HfInference(constants.HF_TOKEN);
-        const pc = new Pinecone({
-            apiKey: constants.PC_TOKEN
-        });
+        const hf = new HfInference("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")
 
         const vecArr = [];
 
-        // Process each chunk
+        const pc = new Pinecone({
+            apiKey:"pcsk_FmhEX_Pjh4gScmq1xnmiMEQ315sd9EtSu25sUfMwy8FLF7kfZcEmKeqkpG7HfWZ687CBy"
+        })
+
+        // Index Name Based on Material ID
+        const indexName = `learnflow-${materialId}`;
+
+        // Check if the index exists
+        try {
+            const indexInfo = await pc.describeIndex(indexName);
+            console.log(`Index ${indexName} already exists.`);
+        } catch (err) {
+            console.log(`Index ${indexName} does not exist. Creating now...`);
+
+            await pc.createIndex({
+                name: indexName,       
+                dimension: 384,           
+                metric:"cosine",
+                spec: {
+                    serverless: {
+                      cloud: 'aws',
+                      region: 'us-east-1'
+                    }
+                  },
+                  deletionProtection: 'disabled',
+                  tags: { environment: 'development' }, 
+            });
+        
+            console.log(`Index ${indexName} created successfully.`);
+            await new Promise(resolve => setTimeout(resolve, 3000));
+        }
+
+        // Generate embeddings for each chunk
         for (let i = 0; i < output.length; i++) {
             let content = output[i].pageContent;
             let obj = {
-                id: `${fileName}-${i+1}`,
+                id: `${materialId}-${i + 1}`,
                 metadata: { text: content }
             };
 
-            // Get vector embeddings from Hugging Face
+            console.log("Processing chunk:", i + 1);
+
             let value = await hf.featureExtraction({
                 model: "sentence-transformers/all-MiniLM-L6-v2",
                 inputs: content
@@ -60,13 +91,15 @@ const postVectorsForMaterial = async (materialId) => {
             vecArr.push(obj);
         }
 
+        const index = pc.Index(indexName);
+
+        console.log(vecArr);
+
         // Upload vectors to Pinecone
-        const index = pc.Index("exoplanetarium");
-        const data = await index.namespace('nsac').upsert(vecArr);
+        const data = await index.namespace(materialId.toString()).upsert(vecArr);
 
         console.log("Vectors posted successfully:", data);
         return data;
-
     } catch (e) {
         console.error("Error posting vectors:", e.message);
         throw new Error(e.message);
@@ -75,10 +108,11 @@ const postVectorsForMaterial = async (materialId) => {
 
 
 exports.createMaterial = async (req, res) => {
-    const { CollectionID, CreatedByID } = req.body;
-    
+    const {  CollectionID, CreatedByID } = req.body;
     // Get the file from req.file
-    const File = req.file ? req.file.buffer : null;
+    const TimeC = new Date();
+    const File = req.file;
+    console.log(File)
 
     if (!File) {
         return res.status(400).send({
@@ -89,25 +123,26 @@ exports.createMaterial = async (req, res) => {
 
     try {
         // Compress the file buffer
-        const compressedFile = zlib.gzipSync(File);
+        const compressedFile = zlib.gzipSync(File.buffer);
+
+        console.log("1 done")
 
         const createMaterialSQL = `
-            INSERT INTO Material (File, CollectionID, CreatedByID)
-            VALUES (?, ?, ?)
+            INSERT INTO Material (Name, File, CollectionID, CreatedByID, TimeCreated)
+            VALUES (?, ?, ?, ?, ?)
         `;
 
-        const result = await Qexecution.queryExecute(createMaterialSQL, [compressedFile, CollectionID, CreatedByID]);
-
+        const result = await Qexecution.queryExecute(createMaterialSQL, [File.originalname, compressedFile, CollectionID, CreatedByID, TimeC]);
+        console.log("2 done")
         const newMaterialId = result.insertId;
 
         // Call postVectorsForMaterial directly as a function
         const vectorResult = await postVectorsForMaterial(newMaterialId);
-
+        console.log("3 done")
         res.status(200).send({
             status: "success",
             message: "Material created and vectors posted successfully.",
             materialId: newMaterialId,
-            vectorResult: vectorResult
         });
 
     } catch (err) {
@@ -166,11 +201,11 @@ exports.getMaterialsByCollectionID = async (req, res) => {
 exports.getMaterialByMaterialID = async (req, res) => {
     const { materialId } = req.params;
 
+    // Query to get material details along with CreatedByName
     const getMaterialSQL = `
         SELECT 
             m.MaterialID, 
             m.Name, 
-            m.Description, 
             m.File, 
             m.CollectionID, 
             m.CreatedByID, 
@@ -180,7 +215,16 @@ exports.getMaterialByMaterialID = async (req, res) => {
         WHERE m.MaterialID = ?
     `;
 
+    // Query to get comma-separated list of CollaboratorIDs
+    const getCollaboratorsSQL = `
+        SELECT 
+            GROUP_CONCAT(CollaboratorID) AS CollaboratorIDs
+        FROM collaborator
+        WHERE CollectionID = ?
+    `;
+
     try {
+        // Get Material Details
         const material = await Qexecution.queryExecute(getMaterialSQL, [materialId]);
 
         if (material.length === 0) {
@@ -190,6 +234,10 @@ exports.getMaterialByMaterialID = async (req, res) => {
             });
         }
 
+        // Get Collaborator IDs as comma-separated list
+        const collaborators = await Qexecution.queryExecute(getCollaboratorsSQL, [materialId]);
+        const collaboratorIDs = collaborators[0].CollaboratorIDs || ""; // If no collaborators, return empty string
+
         // Decompress the file buffer before returning
         if (material[0].File) {
             material[0].File = zlib.gunzipSync(material[0].File);
@@ -198,13 +246,42 @@ exports.getMaterialByMaterialID = async (req, res) => {
         res.status(200).send({
             status: "success",
             message: "Material retrieved successfully.",
-            material: material[0]
+            material: {
+                ...material[0],
+                CreatedByID: material[0].CreatedByID,   // Explicitly adding CreatedByID
+                CollaboratorIDs: collaboratorIDs        // Adding Collaborator IDs
+            }
         });
     } catch (err) {
         console.error("Error getting material:", err.message);
         res.status(500).send({
             status: "fail",
             message: "Error getting material.",
+            error: err.message,
+        });
+    }
+};
+
+
+exports.deleteMaterial = async (req, res) => {
+    const { materialId } = req.params;
+
+    const deleteMaterialSQL = `
+        DELETE FROM Material WHERE MaterialID = ?
+    `;
+
+    try {
+        await Qexecution.queryExecute(deleteMaterialSQL, [materialId]);
+
+        res.status(200).send({
+            status: "success",
+            message: "Material deleted successfully."
+        });
+    } catch (err) {
+        console.error("Error deleting material:", err.message);
+        res.status(500).send({
+            status: "fail",
+            message: "Error deleting material.",
             error: err.message,
         });
     }

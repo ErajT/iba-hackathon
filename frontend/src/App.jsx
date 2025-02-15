@@ -65,7 +65,7 @@ const AppLayout = () => {
           <Route path="/create" element={<CreateCollab/>} />
           <Route path="/view-public" element={<UserHome/>} />
           <Route path="/collection/:id" element={<UserHome/>} />
-          <Route path="/file/:id" element={<ViewCollectionp/>} />
+          <Route path="/file/:materialId" element={<ViewCollectionp/>} />
 
 
           </Route>

@@ -356,20 +356,20 @@ export default function PDFUploader() {
       const arrayBuffer = await file.arrayBuffer();
       const buffer = new Uint8Array(arrayBuffer); // Convert to buffer format
 
-      const requestBody = {
-        CollectionID: "1", // Replace with actual CollectionID
-        CreatedByID: "1", // Replace with actual CreatedByID
-        File: Array.from(buffer), // Convert buffer to array for JSON
-      };
+      // const requestBody = {
+      //   CollectionID: "1", // Replace with actual CollectionID
+      //   CreatedByID: "1", // Replace with actual CreatedByID
+      //   File: Array.from(buffer), // Convert buffer to array for JSON
+      // };
+
+      const formData = new FormData();
+      formData.append("CollectionID", 1);
+      formData.append("CreatedByID", 1);
+      formData.append("File", file);
 
       const response = await axios.post(
         "http://localhost:2000/material/addMaterial",
-        requestBody,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+        formData
       );
 
       alert("File uploaded successfully!");
