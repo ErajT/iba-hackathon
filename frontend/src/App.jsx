@@ -14,6 +14,8 @@ import RoleAuthorizer from "./components/RoleAuthorizer";
 import { Toaster } from "react-hot-toast";
 import { ToastContainer } from "react-toastify";
 // import Test from "./Pages/Test";
+import VIewPublic from "./Pages/ViewAll/VIewPublic";
+import IndividualCollection from "./Pages/ViewOne/IndividualCollection";
 
 const GlobalStyle = createGlobalStyle`
 //   * {
@@ -43,11 +45,12 @@ const AppLayout = () => {
   return (
     <AppContainer className="text-gray-900 dark:text-white">
       <MainContent>
-        <Toaster toastOptions={{
-          className:"dark:bg-gray-800 dark:text-gray-50 "
-        }} />
+        <Toaster />
         
         <Routes>
+
+          {/* <Route path="/login" element={<UserHome/>} />
+          <Route path="/" element={<Login />} /> */}
 
           {/* ROutes without layout */}
           <Route path="/login" element={<Login />} />       
@@ -57,34 +60,36 @@ const AppLayout = () => {
         <Route element={<Layout />}>
 
         
+          <Route path="/home" element={<UserHome/>} />
+          <Route path="/create" element={<CreateCollab/>} />
+          <Route path="/view-public" element={<VIewPublic />} />
+          <Route path="/collection/:id" element={<IndividualCollection />} />
+          <Route path="/file/:materialId"  element={<ViewCollectionp/>} />
+      
         
           <Route element={<RoleAuthorizer allowedRole="user" />}>
           {/* protected routes for user */}
-
-          <Route path="/home" element={<UserHome/>} />
-          <Route path="/create" element={<CreateCollab/>} />
-          <Route path="/view-public" element={<UserHome/>} />
-          <Route path="/collection/:id" element={<UserHome/>} />
-          <Route path="/file/:materialId" element={<ViewCollectionp/>} />
 
 
           </Route>
 
 
+
+
           <Route element={<RoleAuthorizer allowedRole="admin" />}>
+          
+          <Route path="/home-admin" element={<AdminHome/>} />
           
           <Route path="/home-admin" element={<AdminHome/>} />
           <Route path="/admin/users" element={<UsersCRUD />} />
           {/* protected routes for admin */}
+          
           
           </Route>
         
         
         
         </Route>     
-  
-     
-
         </Routes>
       </MainContent>
     </AppContainer>

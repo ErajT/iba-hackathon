@@ -39,20 +39,48 @@ exports.getCollectionById = async (req, res) => {
         SELECT * FROM Collection WHERE CollectionID = ?
     `;
 
+    const getFilesSQL = `SELECT 
+    u.Name AS CreatedBy,
+    m.Name,
+    m.MaterialID,
+    m.TimeCreated
+ 
+FROM 
+    Material m
+JOIN 
+    user u ON m.CreatedByID = u.UserID
+WHERE 
+    m.CollectionID = ?`
+
+
+const getCollaborators = `
+SELECT u.Name,u.Email,u.UserID
+FROM Collaborator c
+JOIN user u ON c.UserID = u.UserID
+WHERE c.CollectionID = ?;
+
+`
+
     try {
         const collection = await Qexecution.queryExecute(getCollectionSQL, [id]);
 
+        const files = await Qexecution.queryExecute(getFilesSQL,[id])
+        const collaborators = await Qexecution.queryExecute(getCollaborators,[id])
+
+       
+        
         if (collection.length === 0) {
             return res.status(404).send({
                 status: "fail",
                 message: "Collection not found."
             });
         }
+        const data = {...collection[0],files,collaborators}
 
         res.status(200).send({
             status: "success",
             message: "Collection retrieved successfully.",
-            collection: collection[0],
+            collection: data,
         });
     } catch (err) {
         console.error("Error getting collection:", err.message);
@@ -130,14 +158,14 @@ exports.getCollectionsByUser = async (req, res) => {
 
     // Get user's own collections (Public and Private)
     const getUserCollectionsSQL = `
-        SELECT CollectionID, Name, Description, TimeCreated, HasCollaborators, IsPublic
+        SELECT CollectionID, Name, Description, TimeCreated, IsPublic
         FROM Collection
         WHERE UserID = ?
     `;
 
     // Get collections where the user is a collaborator
     const getCollaboratorCollectionsSQL = `
-        SELECT c.CollectionID, c.Name, c.Description, c.TimeCreated, c.HasCollaborators, c.IsPublic, u.Name AS CreatorName
+        SELECT c.CollectionID, c.Name, c.Description, c.TimeCreated, c.IsPublic, u.Name AS CreatorName
         FROM Collection c
         JOIN Collaborator col ON c.CollectionID = col.CollectionID
         JOIN User u ON c.UserID = u.UserID
@@ -169,3 +197,29 @@ exports.getCollectionsByUser = async (req, res) => {
         });
     }
 };
+
+
+exports.updateCollectionDetails = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { Name, Description, isPublic } = req.body;
+  
+      const SQL = `
+        UPDATE Collection 
+        SET Name = ?, Description = ?, isPublic = ? 
+        WHERE CollectionID = ?
+      `;
+  
+      const result = await Qexecution.queryExecute(SQL, [Name, Description, isPublic, id]);
+  
+      if (result.affectedRows > 0) {
+        res.status(200).json({ message: "Collection updated successfully" });
+      } else {
+        res.status(404).json({ message: "Collection not found" });
+      }
+    } catch (e) {
+      console.error(e);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  };
+  

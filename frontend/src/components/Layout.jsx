@@ -4,6 +4,7 @@ import SideBarWrapper from './SideBarWrapper';
 import { MoonIcon, SunIcon } from 'lucide-react';
 import { ThemeContext } from '@/context/ThemeContext';
 import { Outlet } from 'react-router-dom';
+import { ChatPopup } from '@/Pages/Chatbot/ChatPopup';
 
 export function Layout({ children }) {
 
@@ -16,7 +17,7 @@ export function Layout({ children }) {
     },[sidebarOpen])
   return (
     <SidebarProvider open={sidebarOpen} onOpenChange={(o)=>setSidebarOpen(o)}>
-      <div className={`grid h-screen w-full ${sidebarOpen ? 'grid-cols-[250px_1fr]' : 'sm:grid-cols-[1px_1fr] grid-cols-[250px_1fr]'} bg-[#e4e4e4] text-[#003644] dark:text-gray-50 dark:bg-[#08242c]`}>
+      <div className={`grid h-screen w-full ${sidebarOpen ? 'grid-cols-[250px_1fr]' : 'sm:grid-cols-[1px_1fr] grid-cols-[250px_1fr]'} bg-[#e4e4e4] text-[#003644] dark:text-gray-50 dark:bg-[#091e24]`}>
         {/* Sidebar Wrapper */}
         <SideBarWrapper className="bg-gray-800 text-white" sidebarOpen={sidebarOpen} />
 
@@ -30,7 +31,7 @@ export function Layout({ children }) {
             <SidebarTrigger />
 
               
-              <h1 className="text-xl font-bold">My App</h1>
+              <h1 className="text-xl font-bold">My App    </h1>
 
             </div>
               <button
@@ -40,6 +41,8 @@ export function Layout({ children }) {
 
           {/* This will render the child components inside the main area */}
         <Outlet />
+
+        <ChatPopup />
         </main>
       </div>
     </SidebarProvider>
