@@ -1,0 +1,1 @@
+const Qexecution = require("./query");

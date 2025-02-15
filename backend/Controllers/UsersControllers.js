@@ -4,6 +4,7 @@ const Qexecution = require("./query");
 exports.createUser = async (req, res) => {
     const { Name, PhoneNumber, Email } = req.body;
     const isAdmin = 0; // Always set as false
+    
 
     const createUserSQL = `
         INSERT INTO user (Name, PhoneNumber, IsAdmin, Email)
