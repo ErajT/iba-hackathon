@@ -1,23 +1,47 @@
 const Qexecution = require("./query");
 
 exports.checkUser = async (req, res) => {
-    const { Name, PhoneNumber, Email } = req.body;
-    const isAdmin = 0; // Always set as false
+    const { Email } = req.body;
     
-
+    const SQL1 = `SELECT * FROM Pending WHERE Email = ?`;
+    const SQL2 = `SELECT UserID FROM user WHERE Email = ?`;
     const createUserSQL = `
-        INSERT INTO user (Name, PhoneNumber, IsAdmin, Email)
-        VALUES (?, ?, ?, ?)
+        INSERT INTO collaborator (UserID, CollectionID)
+        VALUES (?, ?)
     `;
+    const SQL3 = `DELETE FROM Pending WHERE Email = ?`;
 
     try {
-        // Create new user
-        const result = await Qexecution.queryExecute(createUserSQL, [Name, PhoneNumber, isAdmin, Email]);
+        // Check if the user is in the Pending list
+        const result1 = await Qexecution.queryExecute(SQL1, Email);
+        if (result1.length === 0) {
+            return res.status(404).send({
+                status: "fail",
+                message: "No pending users found.",
+            });
+        }
+
+        // Get UserID from the user table
+        const result2 = await Qexecution.queryExecute(SQL2, Email);
+        if (result2.length === 0) {
+            return res.status(404).send({
+                status: "fail",
+                message: "User not found in user table.",
+            });
+        }
+
+        const collectionID = result1[0].collectionID;
+        const UserID = result2[0].UserID;
+
+        // Create new collaborator
+        await Qexecution.queryExecute(createUserSQL, [UserID, collectionID]);
+
+        // Delete from Pending table
+        await Qexecution.queryExecute(SQL3, Email);
 
         res.status(200).send({
             status: "success",
-            message: "User created successfully.",
-            userId: result.insertId,
+            message: "User added as collaborator successfully.",
         });
     } catch (err) {
         console.error("Error creating user:", err.message);
@@ -28,6 +52,7 @@ exports.checkUser = async (req, res) => {
         });
     }
 };
+
 
 // Create User
 exports.createUser = async (req, res) => {

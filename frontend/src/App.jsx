@@ -61,10 +61,11 @@ const AppLayout = () => {
 
         
           <Route path="/home" element={<UserHome/>} />
-          <Route path="/create" element={<UserHome/>} />
+          <Route path="/create" element={<CreateCollab/>} />
           <Route path="/view-public" element={<VIewPublic />} />
           <Route path="/collection/:id" element={<IndividualCollection />} />
-          <Route path="/file/:id" element={<UserHome/>} />
+          <Route path="/file/:materialId"  element={<ViewCollectionp/>} />
+      
         
           <Route element={<RoleAuthorizer allowedRole="user" />}>
           {/* protected routes for user */}

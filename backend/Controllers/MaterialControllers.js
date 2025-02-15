@@ -55,7 +55,7 @@ const postVectorsForMaterial = async (materialId) => {
         const vecArr = [];
 
         const pc = new Pinecone({
-            apiKey:"9349ca1d-b3b4-4dd3-b757-f444fa76ae32"
+            apiKey:"pcsk_2nsEZt_SxmshCnWwzoXSRRc2KLbFwELVAvbUr8mFGVToUxDD3fWpZAzgYELjemuP7XjD5W"
         })
 
         // Index Name Based on Material ID
