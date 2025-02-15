@@ -64,8 +64,7 @@ const FileItem = ({ Name, TimeCreated, CreatedBy,MaterialID }) => (
   )
   
   const ContributorAvatar = ({ Name, Email,UserID,collectionId,setUpdateTrigger }) =>{ 
-    
-    console.log(Name,Email,UserID)
+ 
     return(
    <div className='flex justify-between gap-1 w-full'>
     <p className='break-words w-12 sm:w-20' >{Name}</p>
