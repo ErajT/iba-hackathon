@@ -100,6 +100,41 @@ exports.getUserById = async (req, res) => {
     }
 };
 
+exports.getUserByEmail = async (req, res) => {
+    const { email } = req.params;
+    const getUserByIdSQL = `
+        SELECT UserID, Name, PhoneNumber, IsAdmin, Email 
+        FROM user
+        WHERE Email = ?
+        AND IsAdmin = 0
+    `;
+
+    try {
+        // Get user by ID
+        const users = await Qexecution.queryExecute(getUserByIdSQL, [email]);
+
+        if (users.length === 0) {
+            return res.status(404).send({
+                status: "fail",
+                message: "User not found.",
+            });
+        }
+
+        res.status(200).send({
+            status: "success",
+            message: "User fetched successfully.",
+            user: users[0],
+        });
+    } catch (err) {
+        console.error("Error fetching user:", err.message);
+        res.status(500).send({
+            status: "fail",
+            message: "Error fetching user.",
+            error: err.message,
+        });
+    }
+};
+
 // Update User by ID
 exports.updateUser = async (req, res) => {
     const { UserID, Name, PhoneNumber, Email } = req.body;

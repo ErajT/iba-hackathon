@@ -17,10 +17,10 @@ module.exports= {
     },
     getUserByEmail: async (email,callBack)=>{
         const SQL= "SELECT * FROM registration where email= ? AND Allowed = ?";
-        const SQL1 = "SELECT * FROM user where "
         try{
-            const result=await Qexecution.queryExecute(SQL,[email, 1]);
-
+            const result = await Qexecution.queryExecute(SQL,[email, 1]);
+            // console.log('yahan tk hogya')
+            // const result1 = await Qexecution.queryExecute(SQL1, [email]);
             return callBack(null,result[0]);
         }catch(err){
             return callBack(err);

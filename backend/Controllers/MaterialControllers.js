@@ -209,3 +209,27 @@ exports.getMaterialByMaterialID = async (req, res) => {
         });
     }
 };
+
+exports.deleteMaterial = async (req, res) => {
+    const { materialId } = req.params;
+
+    const deleteMaterialSQL = `
+        DELETE FROM Material WHERE MaterialID = ?
+    `;
+
+    try {
+        await Qexecution.queryExecute(deleteMaterialSQL, [materialId]);
+
+        res.status(200).send({
+            status: "success",
+            message: "Material deleted successfully."
+        });
+    } catch (err) {
+        console.error("Error deleting material:", err.message);
+        res.status(500).send({
+            status: "fail",
+            message: "Error deleting material.",
+            error: err.message,
+        });
+    }
+};
