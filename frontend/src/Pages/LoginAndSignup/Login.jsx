@@ -334,7 +334,6 @@
 //   )
 // }
 
-
 "use client"
 
 import { useState, useEffect } from "react"
@@ -350,7 +349,7 @@ import { toast, ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import { useNavigate } from "react-router-dom"
 import { backendUrl } from "@/components/constants"
-import cookie from "js-cookie";
+import cookie from "js-cookie"
 
 export default function LoginSignup() {
   const [activeTab, setActiveTab] = useState("login")
@@ -360,6 +359,7 @@ export default function LoginSignup() {
   const [password, setPassword] = useState("")
   const [name, setName] = useState("")
   const [phoneNumber, setPhoneNumber] = useState("")
+  const [role, setRole] = useState("")
   const [isLoading, setIsLoading] = useState(false)
 
   const x = useMotionValue(0)
@@ -397,6 +397,7 @@ export default function LoginSignup() {
       const response = await axios.post(`${backendUrl}/users/login`, {
         email,
         password,
+        role,
       })
       console.log(response)
       if (response.status === 200) {
@@ -434,12 +435,14 @@ export default function LoginSignup() {
         Email: email,
         Name: name,
         PhoneNumber: phoneNumber,
+        Role: role,
       })
       if (createUserResponse.status === 200) {
         const createAuthResponse = await axios.post(`${backendUrl}/users/`, {
           email: email,
           password: password,
           position: "user",
+          role: role,
         })
         console.log(createAuthResponse);
         if (createAuthResponse.status === 200) {
@@ -455,7 +458,7 @@ export default function LoginSignup() {
   }
 
   return (
-    <div className="relative flex h-screen w-full items-center justify-center overflow-hidden bg-[#f0f0f0]">
+    <div className="relative flex h-screen w-full items-center justify-center bg-[#f0f0f0] overflow-y-auto"> {/* Added overflow-y-auto here */}
       <ToastContainer />
       <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJmb2ciIHg9IjAiIHk9IjAiIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48Y2lyY2xlIGN4PSIxNTAiIGN5PSIxNTAiIHI9IjIwMCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgZnJvbT0iMCIgdG89IjIwMCIgZHVyPSIxMHMiIHJlcGVhdENvdW50PSJpbmRlZmluaXRlIi8+PC9jaXJjbGU+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2ZvZykiLz48L3N2Zz4=')] opacity-50 mix-blend-overlay"></div>
       <motion.div
@@ -464,14 +467,14 @@ export default function LoginSignup() {
           rotateY,
           transformStyle: "preserve-3d",
         }}
-        className="w-full max-w-md perspective-1000 z-20"
+        className="w-full max-w-md perspective-1000 z-20 mt-10"
       >
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
-          <Card className="bg-[#2b6777] shadow-[0_10px_50px_rgba(0,0,0,0.3)] overflow-hidden relative border-none">
+          <Card className="bg-[#2b6777] shadow-[0_10px_50px_rgba(0,0,0,0.3)] relative border-none">
             <motion.div
               className="absolute inset-0 bg-gradient-to-br from-[#52ab98] to-[#2b6777] opacity-30"
               initial={{ opacity: 0 }}
@@ -484,7 +487,7 @@ export default function LoginSignup() {
               animate={{ width: "100%" }}
               transition={{ duration: 0.8, ease: "easeInOut" }}
             />
-            <CardHeader className="space-y-2 pt-8 relative z-10">
+            <CardHeader className="space-y-2 pt-16 relative z-10">
               <motion.div
                 initial={{ scale: 0.5, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
@@ -555,6 +558,24 @@ export default function LoginSignup() {
                             >
                               {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                             </button>
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="role" className="text-sm font-medium text-gray-200">
+                            Role
+                          </Label>
+                          <div className="relative">
+                            <select
+                              id="role"
+                              value={role}
+                              onChange={(e) => setRole(e.target.value)}
+                              className="w-full pl-10 pr-3 py-2 bg-[#1a3f4c]/50 border border-[#52ab98]/30 rounded-md focus:outline-none focus:ring-2 focus:ring-[#52ab98] text-white placeholder-gray-400"
+                            >
+                              <option value="" className="text-gray-400">Select Role</option>
+                              <option value="undergraduate">Undergraduate</option>
+                              <option value="phd">PhD</option>
+                              <option value="faculty">Faculty</option>
+                            </select>
                           </div>
                         </div>
                         <Button
@@ -651,6 +672,24 @@ export default function LoginSignup() {
                             >
                               {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                             </button>
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="role" className="text-sm font-medium text-gray-200">
+                            Role
+                          </Label>
+                          <div className="relative">
+                            <select
+                              id="role"
+                              value={role}
+                              onChange={(e) => setRole(e.target.value)}
+                              className="w-full pl-10 pr-3 py-2 bg-[#1a3f4c]/50 border border-[#52ab98]/30 rounded-md focus:outline-none focus:ring-2 focus:ring-[#52ab98] text-white placeholder-gray-400"
+                            >
+                              <option value="">Select Role</option>
+                              <option value="undergraduate">Undergraduate</option>
+                              <option value="phd">PhD</option>
+                              <option value="faculty">Faculty</option>
+                            </select>
                           </div>
                         </div>
                         <Button
