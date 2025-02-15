@@ -329,7 +329,6 @@
 
 // export default UserHome
 
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -351,26 +350,34 @@ export default function PDFUploader() {
     }
 
     setLoading(true);
-    const formData = new FormData();
-    formData.append("CollectionID", "1"); // Replace with actual CollectionID
-    formData.append("CreatedByID", "67890"); // Replace with actual CreatedByID
-    formData.append("File", file);
 
     try {
+      // Read file as ArrayBuffer
+      const arrayBuffer = await file.arrayBuffer();
+      const buffer = new Uint8Array(arrayBuffer); // Convert to buffer format
+
+      const requestBody = {
+        CollectionID: "1", // Replace with actual CollectionID
+        CreatedByID: "1", // Replace with actual CreatedByID
+        File: Array.from(buffer), // Convert buffer to array for JSON
+      };
+
       const response = await axios.post(
         "http://localhost:2000/material/addMaterial",
-        formData,
+        requestBody,
         {
           headers: {
-            "Content-Type": "multipart/form-data",
+            "Content-Type": "application/json",
           },
         }
       );
+
       alert("File uploaded successfully!");
     } catch (error) {
       console.error("Upload error:", error);
       alert("Failed to upload file.");
     }
+
     setLoading(false);
   };
 

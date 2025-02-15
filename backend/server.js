@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 
 const userRouter = require('./api/users/user.router');
 const UsersRouter = require('./Routes/UsersRouter');
+const materialRouter = require('./Routes/MaterialRouter');
 const collectionRouter = require('./Routes/CollectionRouter');
 
 let app = express();
@@ -37,6 +38,7 @@ app.use(bodyParser.urlencoded({ limit: '200mb', extended: true }));
 //middleware for request body
 app.use(express.json());
 app.use('/collection', collectionRouter);
+app.use('/material', materialRouter);
 app.use('/users', userRouter);
 app.use('/usersCrud', UsersRouter);
 
