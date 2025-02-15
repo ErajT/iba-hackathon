@@ -13,10 +13,11 @@ import ViewCollectionp from "./Pages/CreateCollab/ViewCollectionp";
 import RoleAuthorizer from "./components/RoleAuthorizer";
 import { Toaster } from "react-hot-toast";
 import { ToastContainer } from "react-toastify";
-import Test from "./Pages/Test";
+// import Test from "./Pages/Test";
 import VIewPublic from "./Pages/ViewAll/VIewPublic";
 import IndividualCollection from "./Pages/ViewOne/IndividualCollection";
 import FlashcardPage from "./Pages/FlashCard/FlashcardPage";
+import { ChatBox } from "./Pages/Chatbot/Chatbox";
 
 const GlobalStyle = createGlobalStyle`
 //   * {
@@ -50,6 +51,9 @@ const AppLayout = () => {
         
         <Routes>
 
+          {/* <Route path="/login" element={<UserHome/>} />
+          <Route path="/" element={<Login />} /> */}
+
           {/* ROutes without layout */}
           <Route path="/login" element={<Login />} />       
           <Route path="/" element={<Landing />} />
@@ -63,11 +67,11 @@ const AppLayout = () => {
           <Route path="/view-public" element={<VIewPublic />} />
           <Route path="/collection/:id" element={<IndividualCollection />} />
           <Route path="/file/:materialId" element={<ViewCollectionp/>} />
-          <Route path="/flashcard" element={<FlashcardPage/>} />
+          <Route path="/flashcards/:id" element={<FlashcardPage/>} />
+          <Route path="/chat/:id" element={<ChatBox/>} />
         
           <Route element={<RoleAuthorizer allowedRole="user" />}>
           {/* protected routes for user */}
-
 
 
           </Route>
@@ -89,9 +93,6 @@ const AppLayout = () => {
         
         
         </Route>     
-  
-     
-
         </Routes>
       </MainContent>
     </AppContainer>

@@ -1,5 +1,5 @@
 const Qexecution = require("./query");
-// const constants = require('./constants');
+const pdfParse = require('pdf-parse');
 const zlib = require('zlib');
 const { RecursiveCharacterTextSplitter } = require("langchain/text_splitter");
 const { HfInference } = require("@huggingface/inference");
@@ -24,8 +24,21 @@ const postVectorsForMaterial = async (materialId) => {
         const fileBuffer = zlib.unzipSync(materialResult[0].File); // Decompressing the file
         const fileName = materialResult[0].Name;
 
-        // Parse buffer to text
-        const text = fileBuffer.toString('utf8');
+        let text;
+        
+        // Check if the file is a PDF by its extension
+        if (fileName.endsWith('.pdf')) {
+            console.log("Parsing PDF...");
+
+            // Extract text from PDF
+            const pdfData = await pdfParse(fileBuffer);
+            text = pdfData.text;
+
+            console.log("PDF parsed successfully!");
+        } else {
+            // If not a PDF, assume it's plain text
+            text = fileBuffer.toString('utf8');
+        }
 
         // Split text into chunks
         const textSplitter = new RecursiveCharacterTextSplitter({
@@ -35,13 +48,14 @@ const postVectorsForMaterial = async (materialId) => {
 
         const output = await textSplitter.createDocuments([text]);
         console.log("Total Chunks:", output.length);
+        console.log(output);
 
         const hf = new HfInference("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")
 
         const vecArr = [];
 
         const pc = new Pinecone({
-            apiKey:"pcsk_FmhEX_Pjh4gScmq1xnmiMEQ315sd9EtSu25sUfMwy8FLF7kfZcEmKeqkpG7HfWZ687CBy"
+            apiKey:"pcsk_6tihfD_54PDsx4eSH6tFjrXUu6ebaZDqdFugYeFsApLVcf2rBdJka4yP6nUsaPtgSfr1nW"
         })
 
         // Index Name Based on Material ID
@@ -261,7 +275,6 @@ exports.getMaterialByMaterialID = async (req, res) => {
         });
     }
 };
-
 
 
 exports.deleteMaterial = async (req, res) => {
