@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { format, isValid, parseISO } from 'date-fns'
-import { File, Upload, Users, Info, Plus, X } from 'lucide-react'
+import { File, Upload, Users, Info, Plus, X, PencilIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -12,6 +12,8 @@ import axios from 'axios'
 import { useParams } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import EditCollection from './EditCollection'
+import { Description } from '@radix-ui/react-dialog'
+import Modal from '@/components/Modal'
 
 
 
@@ -44,7 +46,14 @@ function IndividualCollection() {
     const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
       const [collId, setCollId] = useState(useParams().id)
 
-const [collData, setCollData] = useState({})
+const [collData, setCollData] = useState({
+  Name:"",
+  files:[],
+  collaborators:[],
+  TimeCreated:"",
+  Description:"",
+
+})
 
 
   useEffect(()=>{
@@ -53,10 +62,10 @@ const [collData, setCollData] = useState({})
 
       try{
         const res = await axios.get(`http://localhost:2000/collection/getCollectionById/${collId}`)
-        console.log(res.data.collection)
-
-        setCollData({...res.data.collection})
-
+        
+        setCollData(p=>({...res.data.collection}))
+        
+        
       }
       catch(e){
         console.log(e)
@@ -72,19 +81,25 @@ const [collData, setCollData] = useState({})
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-900 py-2 dark:text-gray-100">{collData.Name}</h1>
         <Button onClick={() => setIsUploadModalOpen(true) } className="bg-[#091e24] dark:bg-[#22424a] text-gray-100 hover:cursor-pointer flex items-base py-0 ">
-          <Plus className="h-4 w-4 mr-2 "  /> Add File
+          <PencilIcon className="h-4 w-4 mr-2 "  /> Edit Details
         </Button>
       </div>
 
-      <Card className="mb-6">
+      <Card className="mb-6 pb-8">
         <CardHeader className="pb-2">
           <CardTitle className="text-lg">Files</CardTitle>
         </CardHeader>
         <CardContent>
-          {collData.length>0?collData.files.map((file, index) => (
+          {collData.files.length>0?collData.files.map((file, index) => (
             <FileItem key={index} {...file} />
           )):"No Files Uploaded Yet"}
         </CardContent>
+        <Modal >
+        <Button  className="bg-[#091e24] ml-6 dark:bg-[#22424a] text-gray-100 hover:cursor-pointer flex items-base py-0 ">
+          <Plus className="h-4 w-4 mr-2 "  /> Add File
+        </Button>
+        <div></div>
+        </Modal>
       </Card>
 
       <div className="grid md:grid-cols-2 gap-6">
@@ -94,10 +109,12 @@ const [collData, setCollData] = useState({})
               <Users className="h-5 w-5 mr-2" /> Contributors
             </CardTitle>
           </CardHeader>
-          <CardContent className="flex space-x-2">
-            {collectionData.contributors.map((contributor, index) => (
+          <CardContent className="flex flex-col gap-3 space-x-2">
+            {collData.collaborators.length>0&&collData.collaborators.map((contributor, index) => (
               <ContributorAvatar key={index} {...contributor} />
             ))}
+            <ContributorAvatar name={"Bilal Abbas"} email={"abc@gmail.com"} id={4452} />
+           
           </CardContent>
         </Card>
 

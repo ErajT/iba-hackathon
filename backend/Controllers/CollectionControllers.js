@@ -42,9 +42,9 @@ exports.getCollectionById = async (req, res) => {
     const getFilesSQL = `SELECT 
     u.Name AS CreatedBy,
     m.Name,
-    m.Description,
-    m.TimeCreated,
-    m.File
+    m.MaterialID,
+    m.TimeCreated
+ 
 FROM 
     Material m
 JOIN 

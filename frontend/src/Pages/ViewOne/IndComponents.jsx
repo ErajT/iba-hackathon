@@ -1,12 +1,13 @@
 import React from 'react'
 import { format, isValid, parseISO } from 'date-fns'
-import { DeleteIcon, File, } from 'lucide-react'
+import { DeleteIcon, File, Trash2, } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Link } from 'react-router-dom'
+import Modal from '@/components/Modal'
 
 
 
@@ -15,26 +16,43 @@ export const formatDate = (dateString) => {
     return isValid(date) ? format(date, 'MMM d, yyyy') : 'Invalid Date'
   }
 
-const FileItem = ({ Name, CreatedAt, CreatedBy }) => (
+const FileItem = ({ Name, TimeCreated, CreatedBy,MaterialID }) => (
     <div className="flex items-center justify-between py-3 border-b last:border-b-0 ">
-      <div className="flex items-center space-x-3">
+      <div className="flex items-center space-x-3  bread-words sm:w-56 w-42">
         <File className="h-5 w-5 text-[#125667]" />
-        <Link to={"/file/:1"}>
+        <Link to={`/file/${MaterialID}`}>
         <span className="font-medium hover:cursor-pointer hover:underline">{Name}</span>
         
         </Link>
       </div>
       <div className="text-xs bread-words sm:w-36 w-24 text-gray-500 ">
-        {formatDate(CreatedAt)} by {CreatedBy}
+        {formatDate(TimeCreated)} by {CreatedBy}
       </div>
+
+
+      <Modal title={"Delete File"} desc={`Are you sure you want to delete ${Name}`}>
+      <Trash2 className='hover:cursor-pointer'/>
+<div className='flex gap-8 justify-center'>
+  <button className='btn-green'>Yes</button>
+  <button className='btn-green'>No</button>
+</div>
+      </Modal>
     </div>
   )
   
-  const ContributorAvatar = ({ name, avatar }) => (
-    <Avatar className="h-8 w-8">
-      <AvatarImage src={"https://avatars.githubusercontent.com/u/111193665?v=4&size=64"} alt={name} />
-      <AvatarFallback>{name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-    </Avatar>
+  const ContributorAvatar = ({ name, email,id }) => (
+   <div className='flex justify-between w-full'>
+    <p>{name}</p>
+    <p>{email}</p>
+    
+    <Modal title={"Remove Colloaborator"} desc={`Are you sure you want to remove ${name} from this collection`}>
+      <Trash2 className='hover:cursor-pointer'/>
+<div className='flex gap-8 justify-center'>
+  <button className='btn-green'>Yes</button>
+  <button className='btn-green'>No</button>
+</div>
+      </Modal>
+   </div>
   )
   
   const UploadModal = ({ isOpen, onClose }) => (

@@ -33,8 +33,8 @@ const updateElements = ()=>{
   <DialogTrigger className=' h-full'>{children[0]}</DialogTrigger>
   <DialogContent className='dark:bg-[#191923] dark:text-white bg-gray-100'>
     <DialogHeader>
-      <DialogTitle>{title}</DialogTitle>
-      <DialogDescription>
+      <DialogTitle className="text-gray-800 dark:text-gray-100">{title}</DialogTitle>
+      <DialogDescription className="text-gray-800 dark:text-gray-100">
         {desc}
       </DialogDescription>
     </DialogHeader>
