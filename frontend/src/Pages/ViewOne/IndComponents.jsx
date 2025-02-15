@@ -8,6 +8,9 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Link } from 'react-router-dom'
 import Modal from '@/components/Modal'
+import axios from 'axios'
+import toast from 'react-hot-toast'
+import { DialogTrigger } from '@radix-ui/react-dialog'
 
 
 
@@ -33,28 +36,73 @@ const FileItem = ({ Name, TimeCreated, CreatedBy,MaterialID }) => (
       <Modal title={"Delete File"} desc={`Are you sure you want to delete ${Name}`}>
       <Trash2 className='hover:cursor-pointer'/>
 <div className='flex gap-8 justify-center'>
-  <button className='btn-green'>Yes</button>
-  <button className='btn-green'>No</button>
+  <DialogTrigger>
+
+  <button className='btn-green'
+  onClick={async ()=>{
+    try{
+      const res = await axios.delete(`http://localhost:2000/material/deleteMaterial/${MaterialID}`)
+      toast.success("File Deleted Successfully")
+    }
+    catch(e){
+      console.log(e)
+  toast.error("Deletion failed")
+}
+
+}}
+
+>Yes</button>
+</DialogTrigger>
+
+<DialogTrigger>
+  
+  <button className='btn-green'   >No</button>
+</DialogTrigger>
 </div>
       </Modal>
     </div>
   )
   
-  const ContributorAvatar = ({ name, email,id }) => (
-   <div className='flex justify-between w-full'>
-    <p>{name}</p>
-    <p>{email}</p>
+  const ContributorAvatar = ({ Name, Email,UserID,collectionId,setUpdateTrigger }) =>{ 
     
-    <Modal title={"Remove Colloaborator"} desc={`Are you sure you want to remove ${name} from this collection`}>
+    console.log(Name,Email,UserID)
+    return(
+   <div className='flex justify-between gap-1 w-full'>
+    <p className='break-words w-12 sm:w-20' >{Name}</p>
+    <p className='break-words w-20 sm:w-48' >{Email}</p>
+    
+    <Modal title={"Remove Colloaborator"} desc={`Are you sure you want to remove ${Name} from this collection`}>
       <Trash2 className='hover:cursor-pointer'/>
 <div className='flex gap-8 justify-center'>
-  <button className='btn-green'>Yes</button>
-  <button className='btn-green'>No</button>
+
+  <DialogTrigger>
+
+  <button className='btn-green' onClick={async ()=>{
+    try{
+      let num = Number(collectionId)
+      console.log(UserID,num)
+      const res = await axios.delete(`http://localhost:2000/collaborator/deleteCollaborator`,{data:{userId:UserID,collectionId:num}})
+      setUpdateTrigger(p=>!p)
+      toast.success("Collaborator Deleted Successfully")
+    }
+    catch(e){
+      console.log(e)
+      toast.error("Deletion failed")
+    }
+    
+  }}>Yes</button>
+  </DialogTrigger>
+  
+  <DialogTrigger className='btn-green'>
+    No
+
+  </DialogTrigger>
+    
 </div>
       </Modal>
    </div>
   )
-  
+  }
   const UploadModal = ({ isOpen, onClose }) => (
     <Dialog open={isOpen} onOpenChange={onClose} >
       <DialogContent className='bg-gray-100 text-gray-800 dark:bg-[#091e24] dark:text-white '>

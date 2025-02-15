@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { format, isValid, parseISO } from 'date-fns'
-import { File, Upload, Users, Info, Plus, X, PencilIcon } from 'lucide-react'
+import { File, Upload, Users, Info, Plus, X, PencilIcon, Loader } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -46,6 +46,10 @@ function IndividualCollection() {
     const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
       const [collId, setCollId] = useState(useParams().id)
 
+      const [file,setFile] = useState(null)
+
+      const [triggerUpdate,setTriggerUpdate] = useState(true);
+
 const [collData, setCollData] = useState({
   Name:"",
   files:[],
@@ -65,7 +69,7 @@ const [collData, setCollData] = useState({
         
         setCollData(p=>({...res.data.collection}))
         
-        
+        console.log(res.data.collection)
       }
       catch(e){
         console.log(e)
@@ -73,11 +77,49 @@ const [collData, setCollData] = useState({
       }
     }
     fetch()
-  },[])
+  },[triggerUpdate])
+
+
+const uploadFile = async ()=>{
+  try {
+    if(!file){
+      console.log(file)
+      toast.error("File error")
+      return}
+    // Read file as ArrayBuffer
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = new Uint8Array(arrayBuffer); // Convert to buffer format
+
+    // const requestBody = {
+    //   CollectionID: "1", // Replace with actual CollectionID
+    //   CreatedByID: "1", // Replace with actual CreatedByID
+    //   File: Array.from(buffer), // Convert buffer to array for JSON
+    // };
+
+    const formData = new FormData();
+    formData.append("CollectionID", 1);
+    formData.append("CreatedByID", 1);
+    formData.append("File", file);
+
+    const response = await axios.post(
+      "http://localhost:2000/material/addMaterial",
+      formData
+    );
+console.log(response)
+setTriggerUpdate(p=>!p)
+toast.success("File uploaded successfully")
+  } catch (error) {
+    console.error("Upload error:", error);
+    toast.error("Could not upload file")
+  }
+
+}
+
 
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
+    
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-900 py-2 dark:text-gray-100">{collData.Name}</h1>
         <Button onClick={() => setIsUploadModalOpen(true) } className="bg-[#091e24] dark:bg-[#22424a] text-gray-100 hover:cursor-pointer flex items-base py-0 ">
@@ -94,11 +136,26 @@ const [collData, setCollData] = useState({
             <FileItem key={index} {...file} />
           )):"No Files Uploaded Yet"}
         </CardContent>
-        <Modal >
+        <Modal title={"Add New File"} desc={"Browse or drag and drop the file here"}>
         <Button  className="bg-[#091e24] ml-6 dark:bg-[#22424a] text-gray-100 hover:cursor-pointer flex items-base py-0 ">
           <Plus className="h-4 w-4 mr-2 "  /> Add File
         </Button>
-        <div></div>
+        
+        <Input type={"file"} onChange={(e)=>{
+          console.log(e)
+          if(e.target.files[0].type !== 'application/pdf') {
+            toast.error("Only PDFs are allowed")
+            return
+          }
+          setFile(e.target.files[0])
+        }}  accept="application/pdf"/>
+
+        <Button className="btn-green"
+        
+        onClick={uploadFile}
+        
+        >Add</Button>
+
         </Modal>
       </Card>
 
@@ -111,9 +168,9 @@ const [collData, setCollData] = useState({
           </CardHeader>
           <CardContent className="flex flex-col gap-3 space-x-2">
             {collData.collaborators.length>0&&collData.collaborators.map((contributor, index) => (
-              <ContributorAvatar key={index} {...contributor} />
+              <ContributorAvatar key={index} {...contributor} collectionId={collId} />
             ))}
-            <ContributorAvatar name={"Bilal Abbas"} email={"abc@gmail.com"} id={4452} />
+            <ContributorAvatar Name={"Bilal Abbas"} email={"abc@gmail.com"} id={4452} />
            
           </CardContent>
         </Card>
@@ -136,7 +193,9 @@ const [collData, setCollData] = useState({
         </Card>
       </div>
 
-    <EditCollection isOpen={isUploadModalOpen} onClose={() => setIsUploadModalOpen(false)} /> 
+      {console.log(collData.Name)}
+
+    <EditCollection isOpen={isUploadModalOpen} onClose={() => setIsUploadModalOpen(false)} Name={collData.Name} Description={collData.Description} isPublic={collData.isPublic} id={collData.CollectionID} setTriggerUpdate={setTriggerUpdate} /> 
       {/* <UploadModal isOpen={isUploadModalOpen} onClose={() => setIsUploadModalOpen(false)} className="dark:bg-gray-800" /> */}
     </div>
   )

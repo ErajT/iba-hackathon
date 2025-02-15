@@ -5,7 +5,10 @@ const bodyParser = require('body-parser');
 
 const userRouter = require('./api/users/user.router');
 const UsersRouter = require('./Routes/UsersRouter');
+const materialRouter = require('./Routes/MaterialRouter');
 const collectionRouter = require('./Routes/CollectionRouter');
+const FlashCardRouter = require('./Routes/FlashCardRouter');
+const collabRouter= require("./Routes/CollaboratorRouter")
 
 let app = express();
 app.options('*', cors()); // Allow preflight requests
@@ -37,8 +40,11 @@ app.use(bodyParser.urlencoded({ limit: '200mb', extended: true }));
 //middleware for request body
 app.use(express.json());
 app.use('/collection', collectionRouter);
+app.use('/material', materialRouter);
 app.use('/users', userRouter);
 app.use('/usersCrud', UsersRouter);
+app.use('/flashcard', FlashCardRouter);
+app.use('/collaborator',collabRouter)
 
 
 

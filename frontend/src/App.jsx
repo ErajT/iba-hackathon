@@ -8,6 +8,7 @@ import Login from "./Pages/LoginAndSignup/Login";
 import { Layout } from "./components/Layout";
 import { AdminHome } from "./Pages/Home/AdminHome";
 import UsersCRUD from "./Pages/UserMgt/UsersCRUD";
+import CreateCollab from "./Pages/CreateCollab/CreateCollab";
 import RoleAuthorizer from "./components/RoleAuthorizer";
 import { Toaster } from "react-hot-toast";
 import { ToastContainer } from "react-toastify";
@@ -69,11 +70,16 @@ const AppLayout = () => {
           </Route>
 
 
+
+
           <Route element={<RoleAuthorizer allowedRole="admin" />}>
+          
+          <Route path="/home-admin" element={<AdminHome/>} />
           
           <Route path="/home-admin" element={<AdminHome/>} />
           <Route path="/admin/users" element={<UsersCRUD />} />
           {/* protected routes for admin */}
+          
           
           </Route>
         

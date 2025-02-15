@@ -18,4 +18,7 @@ router.route('/updateUser')
 router.route('/deleteUser/:id')
     .delete(UserHandler.deleteUser);
 
+router.route('/getUserByEmail/:email')
+    .get(UserHandler.getUserByEmail);
+
 module.exports = router;

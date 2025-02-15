@@ -8,7 +8,17 @@ const connection=mysql.createPool({
     password: "Delib2005",
     database: "iba",
     port: 3306,
-    ssl: true
+    ssl: true,
+    connectionLimit: 10,
+    multipleStatements: true,
+    acquireTimeout: 1000000,
+    connectTimeout: 1000000,
+    timeout: 1000000,
+    supportBigNumbers: true,
+    bigNumberStrings: true,
+    charset: 'utf8mb4',
+    // Set maxAllowedPacket size here
+    maxAllowedPacket: 64 * 1024 * 1024 * 1024 // 64 MB
 })
 connection.getConnection((err,connection)=>{
     if (err){

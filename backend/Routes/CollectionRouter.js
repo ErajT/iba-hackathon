@@ -17,4 +17,7 @@ router.route('/getPublicCollections')
 router.route('/getCollectionsByUser/:id')
     .get(CollectionHandler.getCollectionsByUser);
 
+    router.route('/updateCollection/:id')
+    .patch(CollectionHandler.updateCollectionDetails);
+
 module.exports = router;
