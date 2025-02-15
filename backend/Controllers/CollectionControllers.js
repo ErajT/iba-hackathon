@@ -158,14 +158,14 @@ exports.getCollectionsByUser = async (req, res) => {
 
     // Get user's own collections (Public and Private)
     const getUserCollectionsSQL = `
-        SELECT CollectionID, Name, Description, TimeCreated, HasCollaborators, IsPublic
+        SELECT CollectionID, Name, Description, TimeCreated, IsPublic
         FROM Collection
         WHERE UserID = ?
     `;
 
     // Get collections where the user is a collaborator
     const getCollaboratorCollectionsSQL = `
-        SELECT c.CollectionID, c.Name, c.Description, c.TimeCreated, c.HasCollaborators, c.IsPublic, u.Name AS CreatorName
+        SELECT c.CollectionID, c.Name, c.Description, c.TimeCreated, c.IsPublic, u.Name AS CreatorName
         FROM Collection c
         JOIN Collaborator col ON c.CollectionID = col.CollectionID
         JOIN User u ON c.UserID = u.UserID

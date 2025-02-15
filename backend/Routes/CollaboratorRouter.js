@@ -3,7 +3,7 @@ const router = express.Router();
 const CollaboratorHandler = require("../Controllers/CollaboratorControllers")
 
 router.route('/addCollaborator')
-    .post(CollaboratorHandler.addCollaborator);
+    .post(CollaboratorHandler.addCollaborators);
 
 router.route('/deleteCollaborator')
     .delete(CollaboratorHandler.deleteCollaborator);

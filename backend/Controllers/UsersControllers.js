@@ -1,5 +1,34 @@
 const Qexecution = require("./query");
 
+exports.checkUser = async (req, res) => {
+    const { Name, PhoneNumber, Email } = req.body;
+    const isAdmin = 0; // Always set as false
+    
+
+    const createUserSQL = `
+        INSERT INTO user (Name, PhoneNumber, IsAdmin, Email)
+        VALUES (?, ?, ?, ?)
+    `;
+
+    try {
+        // Create new user
+        const result = await Qexecution.queryExecute(createUserSQL, [Name, PhoneNumber, isAdmin, Email]);
+
+        res.status(200).send({
+            status: "success",
+            message: "User created successfully.",
+            userId: result.insertId,
+        });
+    } catch (err) {
+        console.error("Error creating user:", err.message);
+        res.status(500).send({
+            status: "fail",
+            message: "Error creating user.",
+            error: err.message,
+        });
+    }
+};
+
 // Create User
 exports.createUser = async (req, res) => {
     const { Name, PhoneNumber, Email } = req.body;
