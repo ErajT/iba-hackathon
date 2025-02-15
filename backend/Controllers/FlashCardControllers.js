@@ -113,7 +113,7 @@ const zlib = require('zlib');
 // Function to Get Relevant Context from Pinecone
 const getContextFromPinecone = async (materialId, userInput) => {
     try {
-        const hf = new HfInference("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");
+        const hf = new HfInference("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");
 
         // Generate embedding for user input
         const queryEmbedding = await hf.featureExtraction({
@@ -122,7 +122,7 @@ const getContextFromPinecone = async (materialId, userInput) => {
         });
         
         const pc = new Pinecone({
-            apiKey:"pcsk_6tihfD_54PDsx4eSH6tFjrXUu6ebaZDqdFugYeFsApLVcf2rBdJka4yP6nUsaPtgSfr1nW"
+            apiKey:"pcsk_2nsEZt_SxmshCnWwzoXSRRc2KLbFwELVAvbUr8mFGVToUxDD3fWpZAzgYELjemuP7XjD5W"
         });
         
         const indexName = `learnflow-${materialId}`;
@@ -208,7 +208,7 @@ exports.talkToPDF = async (req, res) => {
 // Summarization Function
 const summarizeContent = async (inp, min, max) => {
     // const hf = new HfInference("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")
-    const hf = new HfInference("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");
+    const hf = new HfInference("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");
     // console.log(inp);
     const res = await hf.summarization({
         model: 'google/pegasus-cnn_dailymail',
