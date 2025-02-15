@@ -54,7 +54,7 @@ WHERE
 
 
 const getCollaborators = `
-SELECT u.Name
+SELECT u.Name,u.Email,u.UserID
 FROM Collaborator c
 JOIN user u ON c.UserID = u.UserID
 WHERE c.CollectionID = ?;
@@ -67,8 +67,7 @@ WHERE c.CollectionID = ?;
         const files = await Qexecution.queryExecute(getFilesSQL,[id])
         const collaborators = await Qexecution.queryExecute(getCollaborators,[id])
 
-        console.log(files,collaborators)
-
+       
         
         if (collection.length === 0) {
             return res.status(404).send({
@@ -198,3 +197,29 @@ exports.getCollectionsByUser = async (req, res) => {
         });
     }
 };
+
+
+exports.updateCollectionDetails = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { Name, Description, isPublic } = req.body;
+  
+      const SQL = `
+        UPDATE Collection 
+        SET Name = ?, Description = ?, isPublic = ? 
+        WHERE CollectionID = ?
+      `;
+  
+      const result = await Qexecution.queryExecute(SQL, [Name, Description, isPublic, id]);
+  
+      if (result.affectedRows > 0) {
+        res.status(200).json({ message: "Collection updated successfully" });
+      } else {
+        res.status(404).json({ message: "Collection not found" });
+      }
+    } catch (e) {
+      console.error(e);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  };
+  

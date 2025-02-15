@@ -229,7 +229,7 @@ const generateFlashcards = async (prompt) => {
         const flashcards = await fetch("https://openrouter.ai/api/v1/chat/completions", {
             method: "POST",
             headers: {
-                "Authorization": `Bearer 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`,
+                "Authorization": `Bearer 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`,
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({

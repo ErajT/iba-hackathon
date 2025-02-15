@@ -20,7 +20,7 @@ const updateElements = ()=>{
   let arr = [...children];
   arr.splice(0,1);
   setUiElements(arr);
-  console.log(children)
+  // console.log(children)
 
 }
 

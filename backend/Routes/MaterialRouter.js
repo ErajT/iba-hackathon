@@ -12,7 +12,7 @@ router.route('/addMaterial')
 router.route('/getMaterialByCollectionID/:collectionId')
     .get(MaterialHandler.getMaterialsByCollectionID);
 
-router.route('/deleteMaterial')
+router.route('/deleteMaterial/:materialId')
     .delete(MaterialHandler.deleteMaterial);
 
 router.route('/getMaterialById/:materialId')

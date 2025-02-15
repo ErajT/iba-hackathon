@@ -73,11 +73,16 @@ const AppLayout = () => {
           </Route>
 
 
+
+
           <Route element={<RoleAuthorizer allowedRole="admin" />}>
+          
+          <Route path="/home-admin" element={<AdminHome/>} />
           
           <Route path="/home-admin" element={<AdminHome/>} />
           <Route path="/admin/users" element={<UsersCRUD />} />
           {/* protected routes for admin */}
+          
           
           </Route>
         
