@@ -1,10 +1,9 @@
 const Qexecution = require("./query");
-// const constants = require('./constants');
+const pdfParse = require('pdf-parse');
 const zlib = require('zlib');
 const { RecursiveCharacterTextSplitter } = require("langchain/text_splitter");
 const { HfInference } = require("@huggingface/inference");
 const { Pinecone } = require('@pinecone-database/pinecone');
-// const {ServerlessSpec} = require('@pinecone-database/pinecone');
 
 const postVectorsForMaterial = async (materialId) => {
     try {
@@ -25,8 +24,21 @@ const postVectorsForMaterial = async (materialId) => {
         const fileBuffer = zlib.unzipSync(materialResult[0].File); // Decompressing the file
         const fileName = materialResult[0].Name;
 
-        // Parse buffer to text
-        const text = fileBuffer.toString('utf8');
+        let text;
+        
+        // Check if the file is a PDF by its extension
+        if (fileName.endsWith('.pdf')) {
+            console.log("Parsing PDF...");
+
+            // Extract text from PDF
+            const pdfData = await pdfParse(fileBuffer);
+            text = pdfData.text;
+
+            console.log("PDF parsed successfully!");
+        } else {
+            // If not a PDF, assume it's plain text
+            text = fileBuffer.toString('utf8');
+        }
 
         // Split text into chunks
         const textSplitter = new RecursiveCharacterTextSplitter({
@@ -36,13 +48,14 @@ const postVectorsForMaterial = async (materialId) => {
 
         const output = await textSplitter.createDocuments([text]);
         console.log("Total Chunks:", output.length);
+        console.log(output);
 
         const hf = new HfInference("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")
 
         const vecArr = [];
 
         const pc = new Pinecone({
-            apiKey:"pcsk_FmhEX_Pjh4gScmq1xnmiMEQ315sd9EtSu25sUfMwy8FLF7kfZcEmKeqkpG7HfWZ687CBy"
+            apiKey:"pcsk_6tihfD_54PDsx4eSH6tFjrXUu6ebaZDqdFugYeFsApLVcf2rBdJka4yP6nUsaPtgSfr1nW"
         })
 
         // Index Name Based on Material ID
@@ -202,11 +215,11 @@ exports.getMaterialsByCollectionID = async (req, res) => {
 exports.getMaterialByMaterialID = async (req, res) => {
     const { materialId } = req.params;
 
+    // Query to get material details along with CreatedByName
     const getMaterialSQL = `
         SELECT 
             m.MaterialID, 
             m.Name, 
-            m.Description, 
             m.File, 
             m.CollectionID, 
             m.CreatedByID, 
@@ -216,7 +229,16 @@ exports.getMaterialByMaterialID = async (req, res) => {
         WHERE m.MaterialID = ?
     `;
 
+    // Query to get comma-separated list of CollaboratorIDs
+    const getCollaboratorsSQL = `
+        SELECT 
+            GROUP_CONCAT(CollaboratorID) AS CollaboratorIDs
+        FROM collaborator
+        WHERE CollectionID = ?
+    `;
+
     try {
+        // Get Material Details
         const material = await Qexecution.queryExecute(getMaterialSQL, [materialId]);
 
         if (material.length === 0) {
@@ -226,6 +248,10 @@ exports.getMaterialByMaterialID = async (req, res) => {
             });
         }
 
+        // Get Collaborator IDs as comma-separated list
+        const collaborators = await Qexecution.queryExecute(getCollaboratorsSQL, [materialId]);
+        const collaboratorIDs = collaborators[0].CollaboratorIDs || ""; // If no collaborators, return empty string
+
         // Decompress the file buffer before returning
         if (material[0].File) {
             material[0].File = zlib.gunzipSync(material[0].File);
@@ -234,7 +260,11 @@ exports.getMaterialByMaterialID = async (req, res) => {
         res.status(200).send({
             status: "success",
             message: "Material retrieved successfully.",
-            material: material[0]
+            material: {
+                ...material[0],
+                CreatedByID: material[0].CreatedByID,   // Explicitly adding CreatedByID
+                CollaboratorIDs: collaboratorIDs        // Adding Collaborator IDs
+            }
         });
     } catch (err) {
         console.error("Error getting material:", err.message);
@@ -245,6 +275,7 @@ exports.getMaterialByMaterialID = async (req, res) => {
         });
     }
 };
+
 
 exports.deleteMaterial = async (req, res) => {
     const { materialId } = req.params;
