@@ -205,7 +205,6 @@ const TableRowWrapper = ({ id, name, email, phone, role, onUpdate }) => {
     role: role,
   });
 
-  // Update the state when props change
   useEffect(() => {
     setData({
       id: id,

@@ -402,13 +402,13 @@ export default function LoginSignup() {
       console.log(response)
       if (response.status === 200) {
         cookie.set("userDetails", JSON.stringify(response.data), {
-          expires: 7, // Cookie will expire in 7 days
-          secure: true, // Ensure secure cookie usage in HTTPS
+          expires: 7, 
+          secure: true, 
         });
         console.log(response.data.position)
         cookie.set("position", JSON.stringify(response.data.position), {
-          expires: 7, // Cookie will expire in 7 days
-          secure: true, // Ensure secure cookie usage in HTTPS
+          expires: 7, 
+          secure: true, 
         });
         toast.success("Login successful!")
         if(response.data.position == "user")
@@ -458,7 +458,7 @@ export default function LoginSignup() {
   }
 
   return (
-    <div className="relative flex h-screen w-full items-center justify-center bg-[#f0f0f0] overflow-y-auto"> {/* Added overflow-y-auto here */}
+    <div className="relative flex h-screen w-full items-center justify-center bg-[#f0f0f0] overflow-y-auto">
       <ToastContainer />
       <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJmb2ciIHg9IjAiIHk9IjAiIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48Y2lyY2xlIGN4PSIxNTAiIGN5PSIxNTAiIHI9IjIwMCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgZnJvbT0iMCIgdG89IjIwMCIgZHVyPSIxMHMiIHJlcGVhdENvdW50PSJpbmRlZmluaXRlIi8+PC9jaXJjbGU+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2ZvZykiLz48L3N2Zz4=')] opacity-50 mix-blend-overlay"></div>
       <motion.div
