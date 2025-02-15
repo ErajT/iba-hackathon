@@ -72,6 +72,8 @@ export default function LoginSignup() {
           expires: 7, // Cookie will expire in 7 days
           secure: true, // Ensure secure cookie usage in HTTPS
         });
+
+        sessionStorage.setItem("position",JSON.stringify(response.data.position))
         toast.success("Login successful!")
         if(response.data.position == "user")
         {
