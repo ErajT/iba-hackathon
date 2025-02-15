@@ -7,7 +7,15 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 router.route('/addMaterial')
-    .post(upload.single('material'), AdminHandler.addMaterial);  
+    .post(upload.single('material'), MaterialHandler.createMaterial);
+    
+router.route('/getMaterialByCollectionID/:collectionId')
+    .get(MaterialHandler.getMaterialsByCollectionID);
 
+router.route('/deleteMaterial')
+    .delete(MaterialHandler.deleteMaterial);
+
+router.route('/getMaterialById/:materialId')
+    .get(MaterialHandler.getMaterialByMaterialID);
 
 module.exports = router;

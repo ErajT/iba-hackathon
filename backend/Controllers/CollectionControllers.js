@@ -1,19 +1,19 @@
 const Qexecution = require("./query");
 
 exports.createCollection = async (req, res) => {
-    const { UserID, Name, Description, IsPublic, HasCollaborators, Topics } = req.body;
+    const { UserID, Name, Description, IsPublic, Topics } = req.body;
     const TimeCreated = new Date();
 
     // Convert Topics array to a comma-separated string
     const topicsString = Topics.join(',');
 
     const createCollectionSQL = `
-        INSERT INTO Collection (UserID, Name, Description, IsPublic, HasCollaborators, TimeCreated, Topics)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO Collection (UserID, Name, Description, IsPublic, TimeCreated, Topics)
+        VALUES (?, ?, ?, ?, ?, ?)
     `;
 
     try {
-        const result = await Qexecution.queryExecute(createCollectionSQL, [UserID, Name, Description, IsPublic, HasCollaborators, TimeCreated, topicsString]);
+        const result = await Qexecution.queryExecute(createCollectionSQL, [UserID, Name, Description, IsPublic, TimeCreated, topicsString]);
 
         res.status(200).send({
             status: "success",
