@@ -9,6 +9,7 @@ import { Layout } from "./components/Layout";
 import { AdminHome } from "./Pages/Home/AdminHome";
 import UsersCRUD from "./Pages/UserMgt/UsersCRUD";
 import CreateCollab from "./Pages/CreateCollab/CreateCollab";
+import ViewCollectionp from "./Pages/CreateCollab/ViewCollectionp";
 import RoleAuthorizer from "./components/RoleAuthorizer";
 import { Toaster } from "react-hot-toast";
 import { ToastContainer } from "react-toastify";
@@ -64,7 +65,7 @@ const AppLayout = () => {
           <Route path="/create" element={<CreateCollab/>} />
           <Route path="/view-public" element={<UserHome/>} />
           <Route path="/collection/:id" element={<UserHome/>} />
-          <Route path="/file/:id" element={<UserHome/>} />
+          <Route path="/file/:id" element={<ViewCollectionp/>} />
 
 
           </Route>

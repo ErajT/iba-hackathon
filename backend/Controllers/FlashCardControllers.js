@@ -230,25 +230,29 @@ exports.talkToPDF = async (req, res) => {
 
 // Summarization Function
 const summarizeContent = async (inp, min, max) => {
-    const hf = new HfInference("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")
+    // const hf = new HfInference("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")
+    const hf = new HfInference("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");
+    // console.log(inp);
     const res = await hf.summarization({
         model: 'google/pegasus-cnn_dailymail',
         inputs: inp,
         parameters: {
-            max_length: max || 500,
-            min_length: min || 250,
+            max_length: 500,
+            min_length: 250,
         }
     });
+    console.log("abcd")
     return res;
 };
 
 // Function to generate flashcards for a given summary
 const generateFlashcards = async (prompt) => {
     try {
+        console.log(prompt)
         const flashcards = await fetch("https://openrouter.ai/api/v1/chat/completions", {
             method: "POST",
             headers: {
-                "Authorization": `Bearer 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`,
+                "Authorization": `Bearer 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`,
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
@@ -261,6 +265,7 @@ const generateFlashcards = async (prompt) => {
         });
 
         const flashcardsRes = await flashcards.json();
+        console.log(flashcardsRes)
         return flashcardsRes.choices[0].message.content;
     } catch (error) {
         console.error("Error generating flashcards:", error.message);
@@ -302,11 +307,15 @@ exports.generateFlashcards = async (req, res) => {
         console.log("3")
         // Summarize the text to approximately 500 words
         console.log('Summarizing content...');
+        // console.log(cleanedText);
         const summarizedText = await summarizeContent(cleanedText, 400, 600);
 
+        // console.log(summarizedText)
+
         // Send the summarized text to LLM to generate flashcards
+        const txt = summarizedText.summary_text.replace(/\s+/g, ' ').trim();
         console.log('Generating flashcards...');
-        const flashcards = await generateFlashcards(summarizedText.summary_text);
+        const flashcards = await generateFlashcards(txt);
 
         return res.status(200).send({
             status: "success",
