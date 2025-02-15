@@ -5,8 +5,8 @@ const crypto = require('crypto');
 module.exports= {
     create: (data,callBack)=>{
         pool.query(
-            `insert into registration(email, password, position, id, Allowed) values(?,?,?,?,?)`,
-            [data.email, data.password, data.position, data.id, 1],
+            `insert into registration(email, password, position, Allowed) values(?,?,?,?)`,
+            [data.email, data.password, data.position, 1],
             (error, results) => {
                 if (error) {
                     return callBack(error);
@@ -18,7 +18,9 @@ module.exports= {
     getUserByEmail: async (email,callBack)=>{
         const SQL= "SELECT * FROM registration where email= ? AND Allowed = ?";
         try{
-            const result=await Qexecution.queryExecute(SQL,[email, 1]);
+            const result = await Qexecution.queryExecute(SQL,[email, 1]);
+            // console.log('yahan tk hogya')
+            // const result1 = await Qexecution.queryExecute(SQL1, [email]);
             return callBack(null,result[0]);
         }catch(err){
             return callBack(err);

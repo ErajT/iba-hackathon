@@ -6,9 +6,19 @@ const connection=mysql.createPool({
     host: "learn-2.mysql.database.azure.com",
     user: "learn",
     password: "Delib2005",
-    database: "learn",
+    database: "iba",
     port: 3306,
-    ssl: true
+    ssl: true,
+    connectionLimit: 10,
+    multipleStatements: true,
+    acquireTimeout: 1000000,
+    connectTimeout: 1000000,
+    timeout: 1000000,
+    supportBigNumbers: true,
+    bigNumberStrings: true,
+    charset: 'utf8mb4',
+    // Set maxAllowedPacket size here
+    maxAllowedPacket: 64 * 1024 * 1024 * 1024 // 64 MB
 })
 connection.getConnection((err,connection)=>{
     if (err){
