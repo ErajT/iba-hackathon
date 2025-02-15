@@ -15,6 +15,7 @@ import { ToastContainer } from "react-toastify";
 import Test from "./Pages/Test";
 import VIewPublic from "./Pages/ViewAll/VIewPublic";
 import IndividualCollection from "./Pages/ViewOne/IndividualCollection";
+import FlashcardPage from "./Pages/FlashCard/FlashcardPage";
 
 const GlobalStyle = createGlobalStyle`
 //   * {
@@ -61,6 +62,7 @@ const AppLayout = () => {
           <Route path="/view-public" element={<VIewPublic />} />
           <Route path="/collection/:id" element={<IndividualCollection />} />
           <Route path="/file/:id" element={<UserHome/>} />
+          <Route path="/flashcard " element={<FlashcardPage/>} />
         
           <Route element={<RoleAuthorizer allowedRole="user" />}>
           {/* protected routes for user */}
