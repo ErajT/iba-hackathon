@@ -1,9 +1,11 @@
 const Qexecution = require("./query");
-// const constants = require('./constants');
 const axios = require("axios");
-// controllers/flashcardController.js
 const pdfParse = require('pdf-parse');
 const fetch = require('node-fetch');
+const {HfInference} = require("@huggingface/inference");
+const zlib = require('zlib');
+
+
 
 // Function 1: Create Standalone Question
 exports.createQuestion = async (userInp) => {
@@ -107,44 +109,140 @@ exports.talkToPDF = async (req, res) => {
 };
 
 
-// Function to dynamically detect topics based on headings and structure
-const splitIntoDynamicTopics = (text) => {
-    // Split by lines and check for potential topic headings
-    const lines = text.split('\n');
-    const topics = [];
-    let currentTopic = { title: "Introduction", content: "" };
+// // Function to dynamically detect topics based on headings and structure
+// const splitIntoDynamicTopics = (text) => {
+//     // Split by lines and check for potential topic headings
+//     const lines = text.split('\n');
+//     const topics = [];
+//     let currentTopic = { title: "Introduction", content: "" };
 
-    lines.forEach(line => {
-        // Check if the line could be a heading:
-        // - Starts with capital letter and is short
-        // - Ends with a colon or is in all caps
-        // - Contains common heading keywords
-        if (
-            /^[A-Z][a-zA-Z0-9 ]{1,50}$/.test(line.trim()) || // Capitalized short line
-            /^[A-Z ]+$/.test(line.trim()) || // All caps line
-            /^(Chapter|Section|Topic|Conclusion|Summary|Introduction|[\d]+\.)/i.test(line.trim()) // Keywords
-        ) {
-            // If a new heading is found, save the previous topic
-            if (currentTopic.content.length > 100) { // Only save meaningful content
-                topics.push(currentTopic);
-            }
-            // Start a new topic
-            currentTopic = { title: line.trim(), content: "" };
-        } else {
-            // Otherwise, add the line to the current topic content
-            currentTopic.content += line + " ";
+//     lines.forEach(line => {
+//         // Check if the line could be a heading:
+//         // - Starts with capital letter and is short
+//         // - Ends with a colon or is in all caps
+//         // - Contains common heading keywords
+//         if (
+//             /^[A-Z][a-zA-Z0-9 ]{1,50}$/.test(line.trim()) || // Capitalized short line
+//             /^[A-Z ]+$/.test(line.trim()) || // All caps line
+//             /^(Chapter|Section|Topic|Conclusion|Summary|Introduction|[\d]+\.)/i.test(line.trim()) // Keywords
+//         ) {
+//             // If a new heading is found, save the previous topic
+//             if (currentTopic.content.length > 100) { // Only save meaningful content
+//                 topics.push(currentTopic);
+//             }
+//             // Start a new topic
+//             currentTopic = { title: line.trim(), content: "" };
+//         } else {
+//             // Otherwise, add the line to the current topic content
+//             currentTopic.content += line + " ";
+//         }
+//     });
+
+//     // Push the last topic if it has content
+//     if (currentTopic.content.length > 100) {
+//         topics.push(currentTopic);
+//     }
+
+//     return topics;
+// };
+
+// // Function to generate flashcards for a given topic
+// const generateFlashcards = async (prompt) => {
+//     try {
+//         const flashcards = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+//             method: "POST",
+//             headers: {
+//                 "Authorization": `Bearer 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`,
+//                 "Content-Type": "application/json"
+//             },
+//             body: JSON.stringify({
+//                 "model": "meta-llama/llama-3.1-8b-instruct:free",
+//                 "messages": [
+//                     {"role": "user", "content": prompt},
+//                     {"role": "system", "content": "Generate flashcards in JSON format for the content provided by user. Don't say any intro or conclusion, just return the JSON object strictly. Include both logical and definition-based questions."},
+//                 ],
+//             })
+//         });
+
+//         const flashcardsRes = await flashcards.json();
+//         return flashcardsRes.choices[0].message.content;
+//     } catch (error) {
+//         console.error("Error generating flashcards:", error.message);
+//         return null;
+//     }
+// };
+
+// // Main controller to generate flashcards from Material table
+// exports.generateFlashcards = async (req, res) => {
+//     const { id } = req.params;
+
+//     // Get PDF from Material table
+//     const getPdfSQL = `
+//         SELECT File FROM Material WHERE MaterialID = ?
+//     `;
+
+//     try {
+//         const material = await Qexecution.queryExecute(getPdfSQL, [id]);
+
+//         if (material.length === 0) {
+//             return res.status(404).send({
+//                 status: "fail",
+//                 message: "Material not found."
+//             });
+//         }
+
+//         const pdfBuffer = material[0].File;
+//         const pdfData = await pdfParse(pdfBuffer);
+//         const text = pdfData.text;
+
+//         // Clean the text and split into dynamic topics
+//         const cleanedText = text.replace(/\s+/g, ' ').trim();
+//         const topics = splitIntoDynamicTopics(cleanedText);
+
+//         // Generate flashcards for each topic
+//         const flashcardsByTopic = {};
+//         for (const topic of topics) {
+//             // Limit input to avoid overflow
+//             const prompt = topic.content.substring(0, 5000);
+
+//             console.log(`Generating flashcards for: ${topic.title}`);
+//             const flashcards = await generateFlashcards(prompt);
+
+//             flashcardsByTopic[topic.title] = flashcards;
+//         }
+
+//         return res.status(200).send({
+//             status: "success",
+//             message: "Flashcards generated successfully.",
+//             flashcards: flashcardsByTopic
+//         });
+//     } catch (err) {
+//         console.error("Error generating flashcards:", err.message);
+//         res.status(500).send({
+//             status: "fail",
+//             message: "Error generating flashcards.",
+//             error: err.message,
+//         });
+//     }
+// };
+
+
+
+// Summarization Function
+const summarizeContent = async (inp, min, max) => {
+    const hf = new HfInference("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")
+    const res = await hf.summarization({
+        model: 'google/pegasus-cnn_dailymail',
+        inputs: inp,
+        parameters: {
+            max_length: max || 500,
+            min_length: min || 250,
         }
     });
-
-    // Push the last topic if it has content
-    if (currentTopic.content.length > 100) {
-        topics.push(currentTopic);
-    }
-
-    return topics;
+    return res;
 };
 
-// Function to generate flashcards for a given topic
+// Function to generate flashcards for a given summary
 const generateFlashcards = async (prompt) => {
     try {
         const flashcards = await fetch("https://openrouter.ai/api/v1/chat/completions", {
@@ -189,30 +287,31 @@ exports.generateFlashcards = async (req, res) => {
             });
         }
 
-        const pdfBuffer = material[0].File;
+        const compressedBuffer = material[0].File;
+
+        // Decompress the PDF buffer
+        console.log('Decompressing PDF...');
+        const pdfBuffer = zlib.gunzipSync(compressedBuffer);
+        console.log("1")
+        // Extract text from the PDF
         const pdfData = await pdfParse(pdfBuffer);
         const text = pdfData.text;
-
-        // Clean the text and split into dynamic topics
+        console.log("2")
+        // Clean the text
         const cleanedText = text.replace(/\s+/g, ' ').trim();
-        const topics = splitIntoDynamicTopics(cleanedText);
+        console.log("3")
+        // Summarize the text to approximately 500 words
+        console.log('Summarizing content...');
+        const summarizedText = await summarizeContent(cleanedText, 400, 600);
 
-        // Generate flashcards for each topic
-        const flashcardsByTopic = {};
-        for (const topic of topics) {
-            // Limit input to avoid overflow
-            const prompt = topic.content.substring(0, 5000);
-
-            console.log(`Generating flashcards for: ${topic.title}`);
-            const flashcards = await generateFlashcards(prompt);
-
-            flashcardsByTopic[topic.title] = flashcards;
-        }
+        // Send the summarized text to LLM to generate flashcards
+        console.log('Generating flashcards...');
+        const flashcards = await generateFlashcards(summarizedText.summary_text);
 
         return res.status(200).send({
             status: "success",
             message: "Flashcards generated successfully.",
-            flashcards: flashcardsByTopic
+            flashcards: JSON.parse(flashcards)
         });
     } catch (err) {
         console.error("Error generating flashcards:", err.message);
@@ -223,4 +322,3 @@ exports.generateFlashcards = async (req, res) => {
         });
     }
 };
-
