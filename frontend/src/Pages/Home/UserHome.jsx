@@ -16,7 +16,7 @@ export default function SearchPage() {
   useEffect(() => {
     const fetchCollections = async () => {
       try {
-        const userId = "1" // Replace with actual user ID
+        const userId = "1" 
         const response = await fetch(`http://localhost:2000/collection/getCollectionsByUser/${userId}`)
         if (!response.ok) {
           throw new Error("Failed to fetch collections")
@@ -39,7 +39,7 @@ export default function SearchPage() {
   )
 
   const handleAddNew = () => {
-    window.location.href = "/login"
+    window.location.href = "/create"
   }
 
   const handleCardClick = (collectionId) => {
