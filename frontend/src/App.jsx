@@ -12,6 +12,8 @@ import RoleAuthorizer from "./components/RoleAuthorizer";
 import { Toaster } from "react-hot-toast";
 import { ToastContainer } from "react-toastify";
 import Test from "./Pages/Test";
+import VIewPublic from "./Pages/ViewAll/VIewPublic";
+import IndividualCollection from "./Pages/ViewOne/IndividualCollection";
 
 const GlobalStyle = createGlobalStyle`
 //   * {
@@ -55,15 +57,15 @@ const AppLayout = () => {
         <Route element={<Layout />}>
 
         
+          <Route path="/home" element={<UserHome/>} />
+          <Route path="/create" element={<UserHome/>} />
+          <Route path="/view-public" element={<VIewPublic />} />
+          <Route path="/collection/:id" element={<IndividualCollection />} />
+          <Route path="/file/:id" element={<UserHome/>} />
         
           <Route element={<RoleAuthorizer allowedRole="user" />}>
           {/* protected routes for user */}
 
-          <Route path="/home" element={<UserHome/>} />
-          <Route path="/create" element={<UserHome/>} />
-          <Route path="/view-public" element={<UserHome/>} />
-          <Route path="/collection/:id" element={<UserHome/>} />
-          <Route path="/file/:id" element={<UserHome/>} />
 
 
           </Route>
