@@ -141,13 +141,17 @@ export default function AddCollection() {
         Topics: topics.split(",").map((topic) => topic.trim()),
       })
 
-      const newCollectionId = createCollectionResponse.data.collectionId
-      setCollectionId(newCollectionId)
+      if(createCollectionResponse.status == 200)
+      {
+        const newCollectionId = createCollectionResponse.data.collectionId
+        setCollectionId(newCollectionId)
+        
+              toast({
+                title: "Success",
+                description: "Collection created successfully!",
+              })
+      }
 
-      toast({
-        title: "Success",
-        description: "Collection created successfully!",
-      })
     } catch (error) {
       console.error("Error creating collection:", error)
       toast({

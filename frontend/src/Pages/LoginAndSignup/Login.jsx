@@ -401,11 +401,6 @@ export default function LoginSignup() {
       console.log(response)
       if (response.status === 200) {
         // http://localhost:2000/usersCrud/getUserByEmail/erajtanweer2@gmail.com
-        const response1 = await axios.get(`${backendUrl}/usersCrud/getUserByEmail/${email}`);
-        cookie.set("userDetails", JSON.stringify(response1.data), {
-          expires: 7, 
-          secure: true, 
-        });
         console.log(response.data.position)
         cookie.set("position", JSON.stringify(response.data.position), {
           expires: 7, 
@@ -414,6 +409,11 @@ export default function LoginSignup() {
         toast.success("Login successful!")
         if(response.data.position == "user")
         {
+          const response1 = await axios.get(`${backendUrl}/usersCrud/getUserByEmail/${email}`);
+          cookie.set("userDetails", JSON.stringify(response1.data), {
+            expires: 7, 
+            secure: true, 
+          });
           navigate("/landing")
         }
         else if(response.data.position == "admin")
@@ -445,8 +445,13 @@ export default function LoginSignup() {
           position: "user",
           role: role,
         })
+        const checkUserRes = await axios.post(`${backendUrl}/usersCrud/checkUser`, {
+          Email: email,
+
+        })
+        // http://localhost:2000/usersCrud/checkUser
         console.log(createAuthResponse);
-        if (createAuthResponse.status === 200) {
+        if (createAuthResponse.status === 200 && checkUserRes.status== 200) {
           toast.success("Signup successful!")
           navigate("/landing")
         }
