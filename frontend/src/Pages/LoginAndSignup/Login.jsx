@@ -465,7 +465,9 @@ export default function LoginSignup() {
   }
 
   return (
-    <div className="relative flex h-screen w-full items-center justify-center bg-[#f0f0f0] overflow-y-auto">
+ 
+
+    <div className="relative flex h-screen w-full items-center justify-center bg-[#00414b]  overflow-y-auto">
       <ToastContainer />
       <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJmb2ciIHg9IjAiIHk9IjAiIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48Y2lyY2xlIGN4PSIxNTAiIGN5PSIxNTAiIHI9IjIwMCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgZnJvbT0iMCIgdG89IjIwMCIgZHVyPSIxMHMiIHJlcGVhdENvdW50PSJpbmRlZmluaXRlIi8+PC9jaXJjbGU+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2ZvZykiLz48L3N2Zz4=')] opacity-50 mix-blend-overlay"></div>
       <motion.div
@@ -732,5 +734,6 @@ export default function LoginSignup() {
         </motion.div>
       </motion.div>
     </div>
+ 
   )
 }

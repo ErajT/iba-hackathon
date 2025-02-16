@@ -783,6 +783,13 @@ export default function PDFViewer() {
   const [error, setError] = useState(null)
 
   useEffect(() => {
+    // Check if user is logged in
+    // if (!userDetails) {
+    //   setError("Please log in to view this page.");
+    //   setIsLoading(false);
+    //   return;
+    // }
+
     const fetchPDF = async () => {
       if (!materialId) {
         setError("No material ID provided")
@@ -840,7 +847,7 @@ export default function PDFViewer() {
     <div className="space-y-4 w-full">
       <h2 className="text-2xl font-semibold">AI Features</h2>
       <Card className="p-6 space-y-4">
-        <Button className="w-full gap-2 text-lg h-auto py-4" onClick={() => navigateToFeature("/flashcards")}>
+        <Button className="w-full gap-2 text-lg h-auto py-4" onClick={() => navigateToFeature(`/flashcards/${materialId}`)}>
           <FlashCard className="h-5 w-5" />
           Generate Flash Cards
         </Button>
@@ -850,7 +857,7 @@ export default function PDFViewer() {
         <Button
           className="w-full gap-2 text-lg h-auto py-4"
           variant="outline"
-          onClick={() => navigateToFeature("/chat")}
+          onClick={() => navigateToFeature(`/chat/${materialId  }`)}
         >
           <Brain className="h-5 w-5" />
           Talk to PDF
@@ -872,20 +879,10 @@ export default function PDFViewer() {
     </div>
   )
 
-  if (!cookies.userDetails || !cookies.userDetails.UserID) {
-    return (
-      <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50">
-        <div className="bg-white p-8 rounded-lg shadow-lg text-center">
-  <h2 className="text-2xl font-bold mb-4 text-gray-900">Please Login</h2>
-  <p className="text-gray-700 mb-6">You need to login to access this page.</p>
-  <Button className="text-white bg-blue-500 hover:bg-blue-600" onClick={() => navigate("/login")}>
-    Go to Login
-  </Button>
-</div>
-
-      </div>
-    )
-  }
+  // If user is not logged in, show a message
+  // if (!userDetails) {
+  //   return <div className="flex items-center justify-center h-screen text-red-500">Please log in to view this page.</div>;
+  // }
 
   if (isLoading) {
     return <div className="flex items-center justify-center h-screen">Loading PDF...</div>

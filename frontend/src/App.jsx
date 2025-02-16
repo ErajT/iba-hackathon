@@ -16,6 +16,8 @@ import { ToastContainer } from "react-toastify";
 // import Test from "./Pages/Test";
 import VIewPublic from "./Pages/ViewAll/VIewPublic";
 import IndividualCollection from "./Pages/ViewOne/IndividualCollection";
+import FlashcardPage from "./Pages/FlashCard/FlashcardPage";
+import { ChatBox } from "./Pages/Chatbot/Chatbox";
 
 const GlobalStyle = createGlobalStyle`
 //   * {
@@ -64,8 +66,9 @@ const AppLayout = () => {
           <Route path="/create" element={<CreateCollab/>} />
           <Route path="/view-public" element={<VIewPublic />} />
           <Route path="/collection/:id" element={<IndividualCollection />} />
-          <Route path="/file/:materialId"  element={<ViewCollectionp/>} />
-      
+          <Route path="/file/:materialId" element={<ViewCollectionp/>} />
+          <Route path="/flashcards/:id" element={<FlashcardPage/>} />
+          <Route path="/chat/:id" element={<ChatBox/>} />
         
           <Route element={<RoleAuthorizer allowedRole="user" />}>
           {/* protected routes for user */}

@@ -209,7 +209,7 @@ catch(e){
             ))}
             
            
-            <div className='flex gap-2 justify-between'>
+            <div className='flex gap-2 justify-between items-center'>
               <select  className='w-64 outline-1 dark:outline-white rounded-lg p-1' value={collabID} onChange={(e)=>handleCollabIdChange(e)}>
                 {allUsers.map((v,i)=>{
                

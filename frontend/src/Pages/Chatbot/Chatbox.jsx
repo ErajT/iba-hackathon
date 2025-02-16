@@ -3,18 +3,24 @@ import { CrossIcon, Send, Smile, XIcon } from 'lucide-react'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import axios from 'axios'
+import { useParams } from 'react-router-dom'
+import toast from 'react-hot-toast'
 
 export function ChatBox({setIsOpen}) {
 
+  const [isLoading,setIsLoading] = useState(false)
   const [messages,setMessages] = useState( [
     {     sender:"user" , content :"Hello"   },
     {     sender:"system" , content :"Hi"   },
   
   ] )
 
+  const {id} = useParams()
+
   const [inpContent,setInpContent] = useState("")
 
-  const sendMessage = (e,fromInp) =>{
+  const sendMessage = async (e,fromInp) =>{
 
     if(fromInp ){
       if(e.key!="Enter"){
@@ -30,18 +36,29 @@ export function ChatBox({setIsOpen}) {
 
 
     // replace this with api call
-    setTimeout(()=>{
-      
-        setMessages(p=>{
-          return [...p, {sender:"system",content:inpContent}]
-        })
-    },1000)
+
+    try{
+      setIsLoading(true)
+      const res = await axios.post(`http://localhost:2000/flashcard/talkToPdf`,{
+        "materialId": id,
+        "userInput": inpContent
+      })
+      console.log(res.data)
+      setMessages(p=>{
+        return [...p, {sender:"system",content:res.data.answer}]
+      })
+      setIsLoading(false)
+    }
+    catch(e){
+toast.error("LLM Server down :(")
+    }
+   
   }
 
 
 
   return (
-    <Card className="w-[400px] h-[600px] flex flex-col shadow-xl transition-all duration-300 ease-in-out bg-gray-200 dark:bg-[#101c1f]">
+    <Card className="w-[400px] h-[600px] flex flex-col m-auto shadow-xl transition-all duration-300 ease-in-out bg-gray-200 dark:bg-[#101c1f]">
       {/* Header */}
       <CardHeader className="border-b bg-white dark:bg-[#101c1f] transition-colors duration-300 flex justify-between flex-row items-center">
         <div className="flex items-center space-x-2">
@@ -80,6 +97,7 @@ export function ChatBox({setIsOpen}) {
   else if(v.sender=="system") return <SystemMsg msg={v.content} key={i} />
 })}
 
+{isLoading&&<p>Preparing Response...</p>}
       </CardContent>
 
       {/* Input Area */}
