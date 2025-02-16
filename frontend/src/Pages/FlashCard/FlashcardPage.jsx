@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { motion } from 'framer-motion';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import { backendUrl } from '@/components/constants';
 
 const flashcards = [
   { question: "What drove the resurgence of AI in the 21st century?", answer: "Advances in machine learning, big data, and increased computing power." },
@@ -37,7 +38,7 @@ const fetch = async ()=>{
 
 try{
     setIsLoading(true)
-const res = await axios.get(`http://localhost:2000/flashcard/generateFlashcard/${id}`)
+const res = await axios.get(`${backendUrl}/flashcard/generateFlashcard/${id}`)
 console.log(res.data)
 setFlashcards(res.data.flashcards.flashcards)
 setIsLoading(false)

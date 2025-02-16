@@ -230,16 +230,6 @@ export default function Home() {
                   {step.title}
                 </h3>
                 <p className="text-white/70 mb-6 leading-relaxed">{step.description}</p>
-                <button
-                  onClick={() =>
-                    (window.location.href = `/learn-more/${step.title.toLowerCase().replace(/\s+/g, "-")}`)
-                  }
-                  className="px-4 py-2 border border-[#c8d8e4] text-[#c8d8e4] rounded-md group-hover:bg-[#08242c] group-hover:text-white group-hover:border-transparent transition-all duration-300 group relative overflow-hidden"
-                >
-                  <span className="relative z-10">Learn More</span>
-                  <ArrowRight className="ml-2 h-4 w-4 inline-block group-hover:translate-x-1 transition-transform duration-300" />
-                  <span className="absolute inset-0 bg-[#c8d8e4] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
-                </button>
               </Card>
             ))}
           </div>

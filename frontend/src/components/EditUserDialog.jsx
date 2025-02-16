@@ -3,6 +3,7 @@ import "./components.css"
 import axios from 'axios'
 import { DialogTrigger } from '@radix-ui/react-dialog'
 import toast from 'react-hot-toast';
+import { backendUrl } from './constants';
 
 
 
@@ -39,14 +40,14 @@ function EditUserDialog({id,name,email,phone,role,onUpdate,isUpdate}) {
 let body;
 let res;
       if(isUpdate){
-        apiUrl = "http://localhost:2000/usersCrud/updateUser"
+        apiUrl =  `${backendUrl}/usersCrud/updateUser`
         body = {...formData}
         console.log("updating")
         res = await axios.put(apiUrl,body)
         toast.success("User Added successfully")
       }
       else{
-        apiUrl = "http://localhost:2000/usersCrud/createUser"
+        apiUrl = `${backendUrl}/usersCrud/createUser`
         let {Email,Name,PhoneNumber} = formData;
         body = {Email,Name,PhoneNumber}
         console.log("creating",body)

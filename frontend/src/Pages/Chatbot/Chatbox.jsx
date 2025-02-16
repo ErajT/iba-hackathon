@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input'
 import axios from 'axios'
 import { useParams } from 'react-router-dom'
 import toast from 'react-hot-toast'
+import { backendUrl } from '@/components/constants'
 
 export function ChatBox({setIsOpen}) {
 
@@ -39,7 +40,7 @@ export function ChatBox({setIsOpen}) {
 
     try{
       setIsLoading(true)
-      const res = await axios.post(`http://localhost:2000/flashcard/talkToPdf`,{
+      const res = await axios.post(`${backendUrl}/flashcard/talkToPdf`,{
         "materialId": id,
         "userInput": inpContent
       })

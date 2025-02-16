@@ -114,6 +114,7 @@ const zlib = require('zlib');
 const getContextFromPinecone = async (materialId, userInput) => {
     try {
         const hf = new HfInference("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");
+        // const hf = new HfInference("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");
 
         // Generate embedding for user input
         const queryEmbedding = await hf.featureExtraction({
@@ -121,10 +122,14 @@ const getContextFromPinecone = async (materialId, userInput) => {
             inputs: userInput
         });
         
-        const pc = new Pinecone({
-            apiKey:"pcsk_5rfWQk_LsW5JHy3pkvgUMEhjMaHqcjSRAU4napaWESvpYYoFqaLyN3XFdiM7QLZF3GNjJG"
-        });
+        // const pc = new Pinecone({
+        //     apiKey:"pcsk_5rfWQk_LsW5JHy3pkvgUMEhjMaHqcjSRAU4napaWESvpYYoFqaLyN3XFdiM7QLZF3GNjJG"
+        // });
+
         
+        const pc = new Pinecone({
+            apiKey:"pcsk_2uTNgP_8U1KLAMgLhsnA93dMTxUU6cuSgVHxpmi5rKFYeX4MC4Bsgno4Aome3qaduf95i2"
+        });
         const indexName = `learnflow-${materialId}`;
         const index = pc.Index(indexName);
         

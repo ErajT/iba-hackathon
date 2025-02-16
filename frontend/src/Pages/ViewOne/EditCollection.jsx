@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label'
 import { Delete, DeleteIcon, PlusCircle, PlusIcon, Trash2Icon } from 'lucide-react'
 import axios from 'axios'
 import toast from 'react-hot-toast'
+import { backendUrl } from '@/components/constants'
 
 function EditCollection({ isOpen, onClose,Name,Description,isPublic=1,id ,setTriggerUpdate}) {
 
@@ -37,7 +38,7 @@ const handleSubmit = async()=>{
     try{
         console.log(id)
         console.log(collectionData)
-        const res = await axios.patch(`http://localhost:2000/collection/updateCollection/${id}`,collectionData);
+        const res = await axios.patch(`${backendUrl}/collection/updateCollection/${id}`,collectionData);
         console.log(res)
         toast.success("Collection Details updated successfully")
         setTriggerUpdate(p=>!p)

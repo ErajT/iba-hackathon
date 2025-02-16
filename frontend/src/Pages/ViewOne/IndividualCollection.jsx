@@ -14,7 +14,7 @@ import toast from 'react-hot-toast'
 import EditCollection from './EditCollection'
 import { Description } from '@radix-ui/react-dialog'
 import Modal from '@/components/Modal'
-
+import { backendUrl } from '@/components/constants'
 
 
 const collectionData = {
@@ -74,12 +74,12 @@ const [allUsers,setAllUsers] = useState([])
 
 
       try{
-        const res = await axios.get(`http://localhost:2000/collection/getCollectionById/${collId}`)
+        const res = await axios.get(`${backendUrl}/collection/getCollectionById/${collId}`)
         
         setCollData(p=>({...res.data.collection}))
         
         console.log(res.data.collection)
-        let users = await axios.get('http://localhost:2000/usersCrud/getAllUsers');
+        let users = await axios.get('${backendUrl}/usersCrud/getAllUsers');
         // console.log(users)
         users = users.data.users.map((v,i)=>{
          
@@ -123,7 +123,7 @@ const uploadFile = async ()=>{
     formData.append("File", file);
 
     const response = await axios.post(
-      "http://localhost:2000/material/addMaterial",
+      `${backendUrl}/material/addMaterial`,
       formData
     );
 console.log(response)
@@ -139,7 +139,7 @@ toast.success("File uploaded successfully")
 const handleAddCollab = async ()=>{
 try{
 
-  const res = await axios.post(`http://localhost:2000/collaborator/addCollaborator`,{userId:collabID,collectionId:collId})
+  const res = await axios.post(`${backendUrl}/collaborator/addCollaborator`,{userId:collabID,collectionId:collId})
   console.log(res)
   toast.success("COllaborator Added succesfully")
 setTriggerUpdate(p=>!p)

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import axios from "axios";
+import { backendUrl } from "@/components/constants";
 
 export default function PDFUploader() {
   const [file, setFile] = useState(null);
@@ -38,7 +39,7 @@ export default function PDFUploader() {
       formData.append("File", file);
 
       const response = await axios.post(
-        "http://localhost:2000/material/addMaterial",
+        `${backendUrl}/material/addMaterial`,
         formData
       );
 

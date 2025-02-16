@@ -7,8 +7,10 @@ import Cookies from 'js-cookie'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import { backendUrl } from "@/components/constants"
 
 export default function SearchPage() {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("")
   const [collections, setCollections] = useState([])
   const [loading, setLoading] = useState(true)
@@ -68,7 +70,8 @@ console.log("kjkk",userDetails)
   }
 
   const handleCardClick = (collectionId) => {
-    window.location.href = `/collection/${collectionId}`
+    setTimeout(() => navigate(`/collection/${collectionId}`), 1500);
+    // window.location.href = `/collection/${collectionId}`
   }
 
   const formatDate = (dateString) => {

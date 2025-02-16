@@ -11,6 +11,7 @@ import Modal from '@/components/Modal'
 import axios from 'axios'
 import toast from 'react-hot-toast'
 import { DialogTrigger } from '@radix-ui/react-dialog'
+import { backendUrl } from '@/components/constants'
 
 
 
@@ -40,7 +41,7 @@ const FileItem = ({ Name, TimeCreated, CreatedBy,MaterialID }) => (
   <button className='btn-green'
   onClick={async ()=>{
     try{
-      const res = await axios.delete(`http://localhost:2000/material/deleteMaterial/${MaterialID}`)
+      const res = await axios.delete(`${backendUrl}/material/deleteMaterial/${MaterialID}`)
       toast.success("File Deleted Successfully")
     }
     catch(e){
@@ -79,7 +80,7 @@ const FileItem = ({ Name, TimeCreated, CreatedBy,MaterialID }) => (
     try{
       let num = Number(collectionId)
       console.log(UserID,num)
-      const res = await axios.delete(`http://localhost:2000/collaborator/deleteCollaborator`,{data:{userId:UserID,collectionId:num}})
+      const res = await axios.delete(`${backendUrl}/collaborator/deleteCollaborator`,{data:{userId:UserID,collectionId:num}})
       setUpdateTrigger(p=>!p)
       toast.success("Collaborator Deleted Successfully")
     }
