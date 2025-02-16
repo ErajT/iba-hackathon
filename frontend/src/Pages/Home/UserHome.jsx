@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { backendUrl } from "@/components/constants"
+import { useNavigate } from "react-router-dom"
 
 export default function SearchPage() {
   const navigate = useNavigate();
@@ -20,6 +21,7 @@ export default function SearchPage() {
 
 useEffect(() => {
     const fetchCollections = async () => {
+      
       try {
         // Get userDetails cookie
         const userDetailsCookie = Cookies.get('userDetails')
