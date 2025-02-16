@@ -10,12 +10,15 @@ import { AdminHome } from "./Pages/Home/AdminHome";
 import UsersCRUD from "./Pages/UserMgt/UsersCRUD";
 import CreateCollab from "./Pages/CreateCollab/CreateCollab";
 import ViewCollectionp from "./Pages/CreateCollab/ViewCollectionp";
+import LandingCollection from "./Pages/CreateCollab/LandingCollection";
 import RoleAuthorizer from "./components/RoleAuthorizer";
 import { Toaster } from "react-hot-toast";
 import { ToastContainer } from "react-toastify";
 // import Test from "./Pages/Test";
 import VIewPublic from "./Pages/ViewAll/VIewPublic";
+import VIewPublic1 from "./Pages/ViewAll/VIewPublic1";
 import IndividualCollection from "./Pages/ViewOne/IndividualCollection";
+import IndividualCollection1 from "./Pages/ViewOne/IndividualCollection1";
 import FlashcardPage from "./Pages/FlashCard/FlashcardPage";
 import { ChatBox } from "./Pages/Chatbot/Chatbox";
 
@@ -65,7 +68,12 @@ const AppLayout = () => {
           <Route path="/home" element={<UserHome/>} />
           <Route path="/create" element={<CreateCollab/>} />
           <Route path="/view-public" element={<VIewPublic />} />
+          <Route path="/view-public1" element={<VIewPublic1 />} />
           <Route path="/collection/:id" element={<IndividualCollection />} />
+          <Route path="/collection1/:id" element={<IndividualCollection1 />} />
+          <Route path="/file/:materialId"  element={<ViewCollectionp/>} />
+          <Route path="/file1/:materialId"  element={<LandingCollection/>} />
+      
           <Route path="/file/:materialId" element={<ViewCollectionp/>} />
           <Route path="/flashcards/:id" element={<FlashcardPage/>} />
           <Route path="/chat/:id" element={<ChatBox/>} />
@@ -83,6 +91,7 @@ const AppLayout = () => {
           
           <Route path="/home-admin" element={<AdminHome/>} />
           
+          {/* <Route path="/home-admin" element={<AdminHome/>} /> */}
         
           <Route path="/admin/users" element={<UsersCRUD />} />
           {/* protected routes for admin */}
