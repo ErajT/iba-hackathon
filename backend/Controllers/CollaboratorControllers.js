@@ -27,33 +27,60 @@ const sendEmail = async (collectionID, userID, recipient, subject, emailBody) =>
 };
 
 
-
-exports.addCollaborator = async (req, res) => {
+exports.addCollaborators = async (req, res) => {
   try {
-    const { collectionId, userId } = req.body; // or from req.body based on your API structure
+    const { collectionId, collaborators } = req.body; 
+    // collaborators should be a comma-separated string of user IDs, e.g., "1,2,3"
 
-    const SQL = `
+    // Split the string into an array of user IDs
+    const userIds = collaborators.split(',').map(id => id.trim());
+
+    if (userIds.length === 0) {
+      return res.status(400).json({ message: 'No collaborators provided' });
+    }
+
+    // Prepare the values for bulk insert
+    const values = userIds.map(userId => `(${userId}, ${collectionId})`).join(',');
+
+    const insertSQL = `
       INSERT INTO Collaborator (UserID, CollectionID) 
-      VALUES (?, ?)
+      VALUES ${values}
     `;
 
-    const SQL1 = `SELECT Email from user WHERE UserID = ?`;
+    // Fetch details for the first user to send the email
+    const SQL1 = `
+      SELECT 
+        u.Name AS UserName, 
+        u.Email, 
+        c.Name AS CollectionName
+      FROM User u
+      JOIN Collection c ON c.CollectionID = ?
+      WHERE u.UserID = ?
+    `;
 
-    const result = await Qexecution.queryExecute(SQL, [userId, collectionId]);
+    const result1 = await Qexecution.queryExecute(SQL1, [collectionId, userIds[0]]);
 
-    const result1 = await Qexecution.queryExecute(SQL1, [userId]);
-
-    const recipient = result1[0].Email;
-    const subject = "Invitation to Join Collection";
-    const emailBody = `You are invited to be a part of the collection named ${collectionId} by ${userId}. Please go to the URL: http://localhost:5173/collection/${collectionID} to view the collection.`;
-  
-
-    const result2 = await sendEmail(collectionId, userId, recipient, subject, emailBody);
+    const result = await Qexecution.queryExecute(insertSQL);
 
     if (result.affectedRows > 0) {
-      res.status(200).json({ message: 'Collaborator added successfully' });
+      // Send emails to all collaborators
+      for (let userId of userIds) {
+        const SQL2 = `
+          SELECT Email 
+          FROM User 
+          WHERE UserID = ?
+        `;
+        const userResult = await Qexecution.queryExecute(SQL2, [userId]);
+        const recipient = userResult[0].Email;
+        const subject = "Invitation to Join Collection";
+        const emailBody = `You are invited to be a part of the collection named ${result1[0].CollectionName} by ${result1[0].UserName}. Please go to the URL: http://localhost:5173/collection/${collectionId} to view the collection.`;
+
+        await sendEmail(collectionId, userId, recipient, subject, emailBody);
+      }
+
+      res.status(200).json({ message: 'Collaborators added successfully' });
     } else {
-      res.status(400).json({ message: 'Failed to add collaborator' });
+      res.status(400).json({ message: 'Failed to add collaborators' });
     }
   } catch (error) {
     console.error(error);
@@ -61,27 +88,37 @@ exports.addCollaborator = async (req, res) => {
   }
 };
 
+
 exports.pending = async (req, res) => {
   try {
-    const { Name, Email, CollectionID } = req.body; // or from req.body based on your API structure
+    const { UserID, Name, Email, CollectionID } = req.body; // or from req.body based on your API structure
 
     const SQL = `
       INSERT INTO Pending ( Name, Email, CollectionID) 
       VALUES (?, ?, ?)
     `;
 
-    const SQL1 = `SELECT Email from user WHERE UserID = ?`;
-
     const result = await Qexecution.queryExecute(SQL, [Name, Email, CollectionID]);
 
-    const result1 = await Qexecution.queryExecute(SQL1, [userId]);
+    const SQL1 = `
+          SELECT 
+              u.Name AS UserName, 
+              u.Email, 
+              c.Name AS CollectionName
+          FROM User u
+          JOIN Collection c ON c.CollectionID = ?
+          WHERE u.UserID = ?
+      `;
+
+      const result1 = await Qexecution.queryExecute(SQL1, [CollectionID, UserID]);
+
 
     const recipient = result1[0].Email;
     const subject = "Invitation to Join Collection";
-    const emailBody = `You are invited to be a part of the collection named ${collectionID} by ${userID}. Please go to the URL: http://localhost:2000/collection/${collectionID} to view the collection.`;
+    const emailBody = `You are invited to be a part of the collection named ${result1[0].CollectionName} by ${result1[0].UserName}. Please go to the URL: http://localhost:5173/login to signup to the system and view the collection.`;
   
 
-    const result2 = await sendEmail(collectionId, userId, recipient, subject, emailBody);
+    const result2 = await sendEmail(CollectionID, UserID, recipient, subject, emailBody);
 
     if (result.affectedRows > 0) {
       res.status(200).json({ message: 'Collaborator added successfully' });

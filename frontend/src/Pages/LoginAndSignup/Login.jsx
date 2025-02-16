@@ -414,7 +414,7 @@ export default function LoginSignup() {
         toast.success("Login successful!")
         if(response.data.position == "user")
         {
-          navigate("/landing")
+          navigate("/home")
         }
         else if(response.data.position == "admin")
         {
