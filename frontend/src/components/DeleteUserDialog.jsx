@@ -2,13 +2,14 @@ import { DialogTrigger } from '@radix-ui/react-dialog'
 import axios from 'axios'
 import React from 'react'
 import toast from 'react-hot-toast';
+import { backendUrl } from './constants';
 
 function DeleteUserDialog({userId,onUpdate}) {
 
   const delUsers = async ()=>{
     
     try{
-      const data = await axios.delete(`http://localhost:2000/usersCrud/deleteUser/${userId}`)
+      const data = await axios.delete(`${backendUrl}/usersCrud/deleteUser/${userId}`)
       onUpdate(p=>!p)
       toast.success("User delete successfully")
     }

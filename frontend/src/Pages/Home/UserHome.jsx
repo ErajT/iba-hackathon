@@ -6,6 +6,7 @@ import { Plus, Search, Globe, Lock } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import { backendUrl } from "@/components/constants"
 
 export default function SearchPage() {
   const [searchQuery, setSearchQuery] = useState("")
@@ -17,7 +18,7 @@ export default function SearchPage() {
     const fetchCollections = async () => {
       try {
         const userId = "1" // Replace with actual user ID
-        const response = await fetch(`http://localhost:2000/collection/getCollectionsByUser/${userId}`)
+        const response = await fetch(`${backendUrl}/collection/getCollectionsByUser/${userId}`)
         if (!response.ok) {
           throw new Error("Failed to fetch collections")
         }

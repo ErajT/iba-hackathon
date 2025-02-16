@@ -15,6 +15,7 @@ import axios from 'axios';
 import Modal from '@/components/Modal';
 import EditUserDialog from '@/components/EditUserDialog';
 import DeleteUserDialog from '@/components/DeleteUserDialog';
+import { backendUrl } from '@/components/constants';
 
 function UsersCRUD() {
   const [tableData, setTableData] = useState([]);
@@ -22,7 +23,7 @@ function UsersCRUD() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await axios.get('http://localhost:2000/usersCrud/getAllUsers');
+      const res = await axios.get(`${backendUrl}/usersCrud/getAllUsers`);
       setTableData(res.data.users);
       console.log(res.data.users);
     };

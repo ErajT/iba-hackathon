@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import { UserIcon } from 'lucide-react'
 import axios from 'axios'
 import { formatDate } from '../ViewOne/IndividualCollection'
-
+import { backendUrl } from '@/components/constants'
 
 
 function VIewPublic() {
@@ -17,7 +17,7 @@ useEffect(()=>{
     
     try{
 
-      const res = await axios.get("http://localhost:2000/collection/getPublicCollections");
+      const res = await axios.get(`${backendUrl}/collection/getPublicCollections`);
 
       console.log(res.data.publicCollections)
 
