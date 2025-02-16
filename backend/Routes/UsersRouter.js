@@ -3,6 +3,10 @@ const router = express.Router();
 const UserHandler = require('../Controllers/UsersControllers');
 
 // Routes for User CRUD Operations
+
+router.route('/checkUser')
+    .post(UserHandler.checkUser);
+
 router.route('/createUser')
     .post(UserHandler.createUser);
 

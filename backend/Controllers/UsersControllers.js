@@ -15,7 +15,7 @@ exports.checkUser = async (req, res) => {
         // Check if the user is in the Pending list
         const result1 = await Qexecution.queryExecute(SQL1, Email);
         if (result1.length === 0) {
-            return res.status(404).send({
+            return res.status(200).send({
                 status: "fail",
                 message: "No pending users found.",
             });
@@ -30,7 +30,7 @@ exports.checkUser = async (req, res) => {
             });
         }
 
-        const collectionID = result1[0].collectionID;
+        const collectionID = result1[0].CollectionID;
         const UserID = result2[0].UserID;
 
         // Create new collaborator

@@ -50,12 +50,12 @@ const postVectorsForMaterial = async (materialId) => {
         console.log("Total Chunks:", output.length);
         console.log(output);
 
-        const hf = new HfInference("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")
+        const hf = new HfInference("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")
 
         const vecArr = [];
 
         const pc = new Pinecone({
-            apiKey:"pcsk_2nsEZt_SxmshCnWwzoXSRRc2KLbFwELVAvbUr8mFGVToUxDD3fWpZAzgYELjemuP7XjD5W"
+            apiKey:"pcsk_5rfWQk_LsW5JHy3pkvgUMEhjMaHqcjSRAU4napaWESvpYYoFqaLyN3XFdiM7QLZF3GNjJG"
         })
 
         // Index Name Based on Material ID
