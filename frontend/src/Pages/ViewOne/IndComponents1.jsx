@@ -23,7 +23,7 @@ const FileItem = ({ Name, TimeCreated, CreatedBy,MaterialID }) => (
     <div className="flex items-center justify-between py-3 border-b last:border-b-0 ">
       <div className="flex items-center space-x-3  bread-words sm:w-56 w-42">
         <File className="h-5 w-5 text-[#125667]" />
-        <Link to={`/file/${MaterialID}`}>
+        <Link to={`/file1/${MaterialID}`}>
         <span className="font-medium hover:cursor-pointer hover:underline">{Name}</span>
         
         </Link>

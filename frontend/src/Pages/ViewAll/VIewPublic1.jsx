@@ -46,12 +46,13 @@ useEffect(()=>{
         }
     ])
 
+
+
   return (
 
     <div className=''>
         <h1 className='text-center font-bold text-4xl mt-16'>Publicly Available Collections</h1>
     <div className='flex justify-center my-14 flex-wrap gap-4'>
-
 {
   publicCollections.map((v,i)=>{
     return  <AdminCard
@@ -108,7 +109,7 @@ const AdminCard = ({ title, description, num, createdAt, creator, id }) => (
     asChild 
     className="w-full bg-[#003644] text-white hover:bg-[#002630] dark:bg-[#08242c] dark:hover:bg-[#061f26]"
   >
-    <Link to={`/collection/${id}`}>View Collection</Link>
+    <Link to={`/collection1/${id}`}>View Collection</Link>
   </Button>
 </CardContent>
 </Card>
