@@ -42,7 +42,7 @@ export function Layout({ children }) {
           {/* This will render the child components inside the main area */}
         <Outlet />
 
-        <ChatPopup />
+        
         </main>
       </div>
     </SidebarProvider>

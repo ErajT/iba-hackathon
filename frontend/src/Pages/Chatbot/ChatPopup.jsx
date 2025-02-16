@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import { MessageCircle, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { ChatBox } from './ChatBox'
+import { ChatBox } from './Chatbox.jsx'
 
 export function ChatPopup() {
   const [isOpen, setIsOpen] = useState(false)

@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { ChatPopup } from "../Chatbot/ChatPopup";
 
 export default function PDFViewer() {
   const { materialId } = useParams(); // Extract materialId from the path
@@ -32,11 +33,11 @@ export default function PDFViewer() {
 
   useEffect(() => {
     // Check if user is logged in
-    // if (!userDetails) {
-    //   setError("Please log in to view this page.");
-    //   setIsLoading(false);
-    //   return;
-    // }
+    if (!userDetails) {
+      setError("Please log in to view this page.");
+      setIsLoading(false);
+      return;
+    }
 
     const fetchPDF = async () => {
       if (!materialId) {
@@ -97,13 +98,14 @@ export default function PDFViewer() {
 
         <Separator className="my-2" />
 
+        
         <Button
           className="w-full gap-2 text-lg h-auto py-4"
           variant="outline"
           onClick={() => navigateToFeature(`/chat/${materialId  }`)}
         >
           <Brain className="h-5 w-5" />
-          Talk to PDF
+          Talk to PDF 
         </Button>
 
         <Separator className="my-2" />
@@ -123,9 +125,9 @@ export default function PDFViewer() {
   );
 
   // If user is not logged in, show a message
-  // if (!userDetails) {
-  //   return <div className="flex items-center justify-center h-screen text-red-500">Please log in to view this page.</div>;
-  // }
+  if (!userDetails) {
+    return <div className="flex items-center justify-center h-screen text-red-500">Please log in to view this page.</div>;
+  }
 
   if (isLoading) {
     return <div className="flex items-center justify-center h-screen">Loading PDF...</div>;
