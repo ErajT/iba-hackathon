@@ -154,7 +154,7 @@ export default function Home() {
               easier and more efficient than ever before.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 animate-fade-up animation-delay-300">
-              <Link to="/sign-up">
+              <Link to="/login">
                 <Button
                   size="lg"
                   className="w-full sm:w-auto bg-[#2b6777] hover:bg-[#3a7d8f] text-white group relative overflow-hidden"
@@ -164,14 +164,16 @@ export default function Home() {
                   <span className="absolute inset-0 bg-[#c8d8e4] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
                 </Button>
               </Link>
-              <button
-                onClick={() => scrollToSection("features")}
-                className="w-full sm:w-auto text-[#c8d8e4] border border-[#c8d8e4] hover:bg-[#2b6777]/10 group relative overflow-hidden px-8 py-3 rounded-md"
-              >
-                <span className="relative z-10">Learn More</span>
-                <ArrowRight className="ml-2 h-5 w-5 inline-block group-hover:translate-x-1 transition-transform duration-300" />
-                <span className="absolute inset-0 bg-[#c8d8e4]/10 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
-              </button>
+              <Link to="/view-public1">
+                <Button
+                  size="lg"
+                  className="w-full sm:w-auto bg-[#2b6777] hover:bg-[#3a7d8f] text-white group relative overflow-hidden"
+                >
+                  <span className="relative z-10">View All</span>
+                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
+                  <span className="absolute inset-0 bg-[#c8d8e4] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
@@ -245,7 +247,7 @@ export default function Home() {
                 Join LearnFlow today and experience a new way of organizing, collaborating, and mastering your studies.
               </p>
               <div className="flex flex-col sm:flex-row justify-center gap-4">
-                <Link to="/sign-up">
+                <Link to="/login">
                   <Button
                     size="lg"
                     className="w-full sm:w-auto bg-[#2b6777] hover:bg-[#3a7d8f] text-white group relative overflow-hidden"
@@ -255,13 +257,13 @@ export default function Home() {
                     <span className="absolute inset-0 bg-[#c8d8e4] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
                   </Button>
                 </Link>
-                <Link to="/demo">
+                <Link to="/view-public1">
                   <Button
                     size="lg"
                     variant="outline"
                     className="w-full sm:w-auto text-[#c8d8e4] border-[#c8d8e4] hover:bg-[#08242c]/10 group relative overflow-hidden"
                   >
-                    <span className="relative z-10">Request Demo</span>
+                    <span className="relative z-10">View All</span>
                     <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
                     <span className="absolute inset-0 bg-[#c8d8e4]/10 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
                   </Button>

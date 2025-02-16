@@ -94,31 +94,30 @@ const items = [
     icon: Home,
   },
   {
-    title: 'Inbox',
-    url: '#',
-    icon: Inbox,
-  },
-  {
     title: 'View All Collections',
     url: '/view-public',
     icon: Inbox,
-  },
-  {
-    title: 'Search',
-    url: '#',
-    icon: Search,
-  },
-  {
-    title: 'Settings',
-    url: '/IndividualCollection',
-    icon: Settings,
-  },
+  }
 ];
+
+const adminItems = [
+  {
+    title: 'Home',
+    url: '/admin-home',
+    icon: Home,
+  },
+  {
+    title: 'User Management',
+    url: '/admin/users',
+    icon: Inbox,
+  }
+]
+
 
 function SideBarWrapper({ sidebarOpen }) {
   const [cookies, removeCookie] = useCookies(['userDetails']); // Access cookies
   const navigate = useNavigate(); // For navigation
-
+// console.log(cookies.userDetails.user.IsAdmin)
   // Logout function
   const handleLogout = () => {
     removeCookie('userDetails'); // Remove userDetails cookie
@@ -132,7 +131,17 @@ function SideBarWrapper({ sidebarOpen }) {
           <SidebarGroupLabel>Application</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item) => (
+              {cookies.userDetails?.user?.IsAdmin==0 && items.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild>
+                    <a href={item.url}>
+                      <item.icon />
+                      <span>{item.title}</span>
+                    </a>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+              {cookies.position=="admin" && adminItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <a href={item.url}>

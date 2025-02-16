@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react"
 import { Plus, Search, Globe, Lock } from "lucide-react"
-import {  useNavigate } from "react-router-dom";
+import Cookies from 'js-cookie'
+
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -15,16 +16,39 @@ export default function SearchPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
-  useEffect(() => {
+
+
+useEffect(() => {
     const fetchCollections = async () => {
       try {
-        const userId = "1" // Replace with actual user ID
-        const response = await fetch(`${backendUrl}/collection/getCollectionsByUser/${userId}`)
+        // Get userDetails cookie
+        const userDetailsCookie = Cookies.get('userDetails')
+
+        if (!userDetailsCookie) {
+          throw new Error("userDetails cookie not found")
+        }
+
+        // Parse the JSON string to an object
+        const userDetails = JSON.parse(userDetailsCookie)
+console.log("kjkk",userDetails)
+        // Extract UserID
+        const userId = userDetails?.user.UserID
+        console.log("id", userId)
+
+        if (!userId) {
+          throw new Error("UserID not found in userDetails cookie")
+        }
+
+        // Fetch collections using the dynamic userId
+        const response = await fetch(`http://localhost:2000/collection/getCollectionsByUser/${userId}`)
+        
         if (!response.ok) {
           throw new Error("Failed to fetch collections")
         }
+
         const data = await response.json()
         const allCollections = [...data.publicCollections, ...data.privateCollections, ...data.collaboratorCollections]
+        
         setCollections(allCollections)
         setLoading(false)
       } catch (err) {
@@ -34,15 +58,15 @@ export default function SearchPage() {
     }
 
     fetchCollections()
-  }, [])
+}, [])
+
 
   const filteredCollections = collections.filter((collection) =>
     collection.Name.toLowerCase().includes(searchQuery.toLowerCase()),
   )
 
   const handleAddNew = () => {
-    setTimeout(() => navigate("/login"), 1500);
-    // window.location.href = "/login"
+    window.location.href = "/create"
   }
 
   const handleCardClick = (collectionId) => {

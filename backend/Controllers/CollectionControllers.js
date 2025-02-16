@@ -128,7 +128,7 @@ exports.deleteCollection = async (req, res) => {
 // Get only public collections with the creator's name
 exports.getPublicCollections = async (req, res) => {
     const getPublicCollectionsSQL = `
-        SELECT c.CollectionID, c.Name, c.Description, c.TimeCreated, c.HasCollaborators, u.Name AS CreatorName
+        SELECT c.CollectionID, c.Name, c.Description, c.TimeCreated, u.Name AS CreatorName
         FROM Collection c
         JOIN User u ON c.UserID = u.UserID
         WHERE c.IsPublic = TRUE

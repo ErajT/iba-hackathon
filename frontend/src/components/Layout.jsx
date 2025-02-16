@@ -22,7 +22,7 @@ export function Layout({ children }) {
     if (cookies.userDetails) {
       // No need to parse, as userDetails is already an object
       const userDetails = cookies.userDetails;
-      setUserName(userDetails.user?.Name || 'User'); // Fallback to 'User' if name is not available
+      setUserName(userDetails.user?.Name || ''); // Fallback to 'User' if name is not available
     }
   }, [cookies.userDetails]);
 
@@ -62,7 +62,7 @@ export function Layout({ children }) {
           {/* This will render the child components inside the main area */}
           <Outlet />
 
-          <ChatPopup />
+        
         </main>
       </div>
     </SidebarProvider>

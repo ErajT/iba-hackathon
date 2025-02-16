@@ -49,7 +49,7 @@ app.use('/collaborator',collabRouter)
 
 
 
-app.listen(2000,()=>{
+app.listen(2000,'0.0.0.0',()=>{
   console.log("Server has started");
 })
 

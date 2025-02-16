@@ -48,7 +48,7 @@ export function ChatBox({setIsOpen}) {
       setMessages(p=>{
         return [...p, {sender:"system",content:res.data.answer}]
       })
-      setIsLoading(false)
+      setIsLoading(false  )
     }
     catch(e){
 toast.error("LLM Server down :(")

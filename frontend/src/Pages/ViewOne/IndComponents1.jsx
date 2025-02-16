@@ -11,7 +11,6 @@ import Modal from '@/components/Modal'
 import axios from 'axios'
 import toast from 'react-hot-toast'
 import { DialogTrigger } from '@radix-ui/react-dialog'
-import { backendUrl } from '@/components/constants'
 
 
 
@@ -24,7 +23,7 @@ const FileItem = ({ Name, TimeCreated, CreatedBy,MaterialID }) => (
     <div className="flex items-center justify-between py-3 border-b last:border-b-0 ">
       <div className="flex items-center space-x-3  bread-words sm:w-56 w-42">
         <File className="h-5 w-5 text-[#125667]" />
-        <Link to={`/file/${MaterialID}`}>
+        <Link to={`/file1/${MaterialID}`}>
         <span className="font-medium hover:cursor-pointer hover:underline">{Name}</span>
         
         </Link>
@@ -41,7 +40,7 @@ const FileItem = ({ Name, TimeCreated, CreatedBy,MaterialID }) => (
   <button className='btn-green'
   onClick={async ()=>{
     try{
-      const res = await axios.delete(`${backendUrl}/material/deleteMaterial/${MaterialID}`)
+      const res = await axios.delete(`http://localhost:2000/material/deleteMaterial/${MaterialID}`)
       toast.success("File Deleted Successfully")
     }
     catch(e){
@@ -80,7 +79,7 @@ const FileItem = ({ Name, TimeCreated, CreatedBy,MaterialID }) => (
     try{
       let num = Number(collectionId)
       console.log(UserID,num)
-      const res = await axios.delete(`${backendUrl}/collaborator/deleteCollaborator`,{data:{userId:UserID,collectionId:num}})
+      const res = await axios.delete(`http://localhost:2000/collaborator/deleteCollaborator`,{data:{userId:UserID,collectionId:num}})
       setUpdateTrigger(p=>!p)
       toast.success("Collaborator Deleted Successfully")
     }
