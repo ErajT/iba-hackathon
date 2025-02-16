@@ -29,6 +29,7 @@ const postVectorsForMaterial = async (materialId) => {
         // Check if the file is a PDF by its extension
         if (fileName.endsWith('.pdf')) {
             console.log("Parsing PDF...");
+            console.log("adding things")
 
             // Extract text from PDF
             const pdfData = await pdfParse(fileBuffer);
@@ -50,12 +51,12 @@ const postVectorsForMaterial = async (materialId) => {
         console.log("Total Chunks:", output.length);
         console.log(output);
 
-        const hf = new HfInference("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")
+        const hf = new HfInference("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")
 
         const vecArr = [];
 
         const pc = new Pinecone({
-            apiKey:"pcsk_6tihfD_54PDsx4eSH6tFjrXUu6ebaZDqdFugYeFsApLVcf2rBdJka4yP6nUsaPtgSfr1nW"
+            apiKey:"pcsk_5rfWQk_LsW5JHy3pkvgUMEhjMaHqcjSRAU4napaWESvpYYoFqaLyN3XFdiM7QLZF3GNjJG"
         })
 
         // Index Name Based on Material ID

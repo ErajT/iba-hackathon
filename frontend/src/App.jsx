@@ -63,7 +63,7 @@ const AppLayout = () => {
 
         
           <Route path="/home" element={<UserHome/>} />
-          <Route path="/create" element={<UserHome/>} />
+          <Route path="/create" element={<CreateCollab/>} />
           <Route path="/view-public" element={<VIewPublic />} />
           <Route path="/collection/:id" element={<IndividualCollection />} />
           <Route path="/file/:materialId" element={<ViewCollectionp/>} />
@@ -83,7 +83,7 @@ const AppLayout = () => {
           
           <Route path="/home-admin" element={<AdminHome/>} />
           
-          <Route path="/home-admin" element={<AdminHome/>} />
+        
           <Route path="/admin/users" element={<UsersCRUD />} />
           {/* protected routes for admin */}
           

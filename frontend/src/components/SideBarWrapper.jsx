@@ -1,7 +1,80 @@
-import React from 'react'
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react"
-import { SidebarTrigger } from '@/components/ui/sidebar'
+// import React from 'react'
+// import { Calendar, Home, Inbox, Search, Settings } from "lucide-react"
+// import { SidebarTrigger } from '@/components/ui/sidebar'
  
+// import {
+//   Sidebar,
+//   SidebarContent,
+//   SidebarGroup,
+//   SidebarGroupContent,
+//   SidebarGroupLabel,
+//   SidebarMenu,
+//   SidebarMenuButton,
+//   SidebarMenuItem,
+// } from "@/components/ui/sidebar"
+ 
+// // Menu items.
+// const items = [
+//   {
+//     title: "Home",
+//     url: "/home",
+//     icon: Home,
+//   },
+//   {
+//     title: "Inbox",
+//     url: "#",
+//     icon: Inbox,
+//   },
+//   {
+//     title: "view all collection",
+//     url: "/view-public",
+//     icon: Inbox,
+//   },
+//   {
+//     title: "Search",
+//     url: "#",
+//     icon: Search,
+//   },
+//   {
+//     title: "Settings",
+//     url: "/IndividualCollection",
+//     icon: Settings,
+//   },
+// ]
+// function SideBarWrapper({sidebarOpen}) {
+//   return (
+//     <Sidebar className={` ${sidebarOpen?"w-64":"w-0 border-none "}`} collapsible="icon">
+//     <SidebarContent>
+//       <SidebarGroup>
+//         <SidebarGroupLabel>Application</SidebarGroupLabel>
+//         <SidebarGroupContent>
+//           <SidebarMenu>
+//             {items.map((item) => (
+//               <SidebarMenuItem key={item.title}>
+//                 <SidebarMenuButton asChild>
+//                   <a href={item.url}>
+//                     <item.icon />
+//                     <span>{item.title}</span>
+//                   </a>
+//                 </SidebarMenuButton>
+//               </SidebarMenuItem>
+//             ))}
+//           </SidebarMenu>
+//         </SidebarGroupContent>
+//       </SidebarGroup>
+//     </SidebarContent>
+//   </Sidebar>
+//   )
+// }
+
+// export default SideBarWrapper
+
+import React from 'react';
+import { Calendar, Home, Inbox, Search, Settings, LogOut } from 'lucide-react'; // Added LogOut icon
+import { SidebarTrigger } from '@/components/ui/sidebar';
+import { useCookies } from 'react-cookie'; // Added to handle logout
+import { useNavigate } from 'react-router-dom'; // Added for navigation
+
 import {
   Sidebar,
   SidebarContent,
@@ -11,60 +84,86 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
- 
+} from '@/components/ui/sidebar';
+
 // Menu items.
 const items = [
   {
-    title: "Home",
-    url: "#",
+    title: 'Home',
+    url: '/home',
     icon: Home,
   },
   {
-    title: "Inbox",
-    url: "#",
+    title: 'View All Collections',
+    url: '/view-public',
     icon: Inbox,
+  }
+];
+
+const adminItems = [
+  {
+    title: 'Home',
+    url: '/admin-home',
+    icon: Home,
   },
   {
-    title: "Calendar",
-    url: "#",
-    icon: Calendar,
-  },
-  {
-    title: "Search",
-    url: "#",
-    icon: Search,
-  },
-  {
-    title: "Settings",
-    url: "#",
-    icon: Settings,
-  },
+    title: 'User Management',
+    url: '/admin/users',
+    icon: Inbox,
+  }
 ]
-function SideBarWrapper({sidebarOpen}) {
+
+
+function SideBarWrapper({ sidebarOpen }) {
+  const [cookies, removeCookie] = useCookies(['userDetails']); // Access cookies
+  const navigate = useNavigate(); // For navigation
+// console.log(cookies.userDetails.user.IsAdmin)
+  // Logout function
+  const handleLogout = () => {
+    removeCookie('userDetails'); // Remove userDetails cookie
+    navigate('/login'); // Redirect to login page
+  };
+
   return (
-    <Sidebar className={` ${sidebarOpen?"w-64":"w-0 border-none "}`} collapsible="icon">
-    <SidebarContent>
-      <SidebarGroup>
-        <SidebarGroupLabel>Application</SidebarGroupLabel>
-        <SidebarGroupContent>
-          <SidebarMenu>
-            {items.map((item) => (
-              <SidebarMenuItem key={item.title}>
-                <SidebarMenuButton asChild>
-                  <a href={item.url}>
-                    <item.icon />
-                    <span>{item.title}</span>
-                  </a>
+    <Sidebar className={`${sidebarOpen ? 'w-64' : 'w-0 border-none'}`} collapsible="icon">
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupLabel>Application</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {cookies.userDetails?.user?.IsAdmin==0 && items.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild>
+                    <a href={item.url}>
+                      <item.icon />
+                      <span>{item.title}</span>
+                    </a>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+              {cookies.position=="admin" && adminItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild>
+                    <a href={item.url}>
+                      <item.icon />
+                      <span>{item.title}</span>
+                    </a>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+              {/* Logout Button */}
+              <SidebarMenuItem>
+                <SidebarMenuButton onClick={handleLogout}>
+                  <LogOut />
+                  <span>Logout</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-            ))}
-          </SidebarMenu>
-        </SidebarGroupContent>
-      </SidebarGroup>
-    </SidebarContent>
-  </Sidebar>
-  )
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+    </Sidebar>
+  );
 }
 
-export default SideBarWrapper
+export default SideBarWrapper;

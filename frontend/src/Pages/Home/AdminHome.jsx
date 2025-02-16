@@ -29,7 +29,7 @@ export function AdminHome() {
   return (
     <div className="space-y-6 px-6">
       <h1 className="text-4xl font-bold tracking-tight text-center my-8">Admin Dashboard</h1>
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="flex justify-center">
         <AdminCard
           title="User Management"
           description="Manage user accounts, roles, and permissions"
@@ -38,7 +38,7 @@ export function AdminHome() {
           linkHref="/admin/users"
           num={0}
         />
-        <AdminCard
+        {/* <AdminCard
           title="Analytics"
           description="View site statistics and user engagement data"
           icon={BarChart}
@@ -53,7 +53,7 @@ export function AdminHome() {
           linkText="Configure Settings"
           linkHref="/admin/settings"
           num={0}
-        />
+        /> */}
       </div>
     </div>
   )
