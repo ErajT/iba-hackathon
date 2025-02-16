@@ -122,14 +122,14 @@ const getContextFromPinecone = async (materialId, userInput) => {
             inputs: userInput
         });
         
-        // const pc = new Pinecone({
-        //     apiKey:"pcsk_5rfWQk_LsW5JHy3pkvgUMEhjMaHqcjSRAU4napaWESvpYYoFqaLyN3XFdiM7QLZF3GNjJG"
-        // });
+        const pc = new Pinecone({
+            apiKey:"pcsk_5rfWQk_LsW5JHy3pkvgUMEhjMaHqcjSRAU4napaWESvpYYoFqaLyN3XFdiM7QLZF3GNjJG"
+        });
 
         
-        const pc = new Pinecone({
-            apiKey:"pcsk_2uTNgP_8U1KLAMgLhsnA93dMTxUU6cuSgVHxpmi5rKFYeX4MC4Bsgno4Aome3qaduf95i2"
-        });
+        // const pc = new Pinecone({
+        //     apiKey:"pcsk_2uTNgP_8U1KLAMgLhsnA93dMTxUU6cuSgVHxpmi5rKFYeX4MC4Bsgno4Aome3qaduf95i2"
+        // });
         const indexName = `learnflow-${materialId}`;
         const index = pc.Index(indexName);
         
@@ -169,7 +169,7 @@ const getAnswerFromPDF = async (context, actualQuestion) => {
             ],
         }, {
             headers: {
-                "Authorization": `Bearer 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`,
+                "Authorization": `Bearer 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`,
                 "Content-Type": "application/json"
             }
         });
@@ -189,6 +189,8 @@ exports.talkToPDF = async (req, res) => {
     try {
         // Step 1: Get Relevant Context from Pinecone
         const context = await getContextFromPinecone(materialId, userInput);
+
+        console.log(context);
 
         // Step 2: Get Answer from PDF Context
         const answer = await getAnswerFromPDF( context, userInput);
@@ -234,7 +236,7 @@ const generateFlashcards = async (prompt) => {
         const flashcards = await fetch("https://openrouter.ai/api/v1/chat/completions", {
             method: "POST",
             headers: {
-                "Authorization": `Bearer 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`,
+                "Authorization": `Bearer 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`,
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
