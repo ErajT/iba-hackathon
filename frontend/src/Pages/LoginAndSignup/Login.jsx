@@ -414,7 +414,8 @@ export default function LoginSignup() {
             expires: 7, 
             secure: true, 
           });
-          navigate("/landing")
+          navigate("/home")
+          // navigate("/landing")
         }
         else if(response.data.position == "admin")
         {

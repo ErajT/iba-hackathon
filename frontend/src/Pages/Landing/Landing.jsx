@@ -1,13 +1,13 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { ArrowRight, Code2, Rocket, Shield, ChevronRight, Star, Zap, Waves, Menu, X } from "lucide-react"
+import { Link } from "react-router-dom"
+import { ArrowRight, BookOpen, Users, FileText, Zap, Menu, X, Lightbulb, MessageSquare } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
-import { Link } from "react-router-dom"
 
-function UserHome() {
+export default function Home() {
   const [scrolled, setScrolled] = useState(false)
   const [activeSection, setActiveSection] = useState("home")
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -16,7 +16,7 @@ function UserHome() {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50)
 
-      const sections = ["home", "features", "services", "contact"]
+      const sections = ["home", "features", "how-it-works", "contact"]
       const current = sections.find((section) => {
         const element = document.getElementById(section)
         if (element) {
@@ -38,6 +38,13 @@ function UserHome() {
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen)
   }
+
+  const scrollToSection = (sectionId) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#1a3e48] to-[#08242c] text-white overflow-hidden">
@@ -71,33 +78,32 @@ function UserHome() {
       >
         <div className="container mx-auto px-6 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
-            <Waves className="h-8 w-8 text-[#c8d8e4] animate-pulse" />
+            <BookOpen className="h-8 w-8 text-[#c8d8e4] animate-pulse" />
             <span className="text-2xl font-bold bg-gradient-to-r from-white to-[#c8d8e4] bg-clip-text text-transparent">
-              AquaVista
+              LearnFlow
             </span>
           </Link>
           <div className="hidden md:flex items-center gap-8">
-            {["home", "features", "services", "contact"].map((item) => (
-              <Link
+            {["home", "features", "how-it-works", "contact"].map((item) => (
+              <button
                 key={item}
-                to={`#${item}`}
                 className={cn(
                   "transition-all duration-300 hover:text-[#c8d8e4] relative overflow-hidden group",
                   activeSection === item ? "text-[#c8d8e4]" : "text-white/70",
                 )}
-                onClick={(e) => {
-                  e.preventDefault()
-                  document.getElementById(item)?.scrollIntoView({ behavior: "smooth" })
-                }}
+                onClick={() => scrollToSection(item)}
               >
-                {item.charAt(0).toUpperCase() + item.slice(1)}
+                {item
+                  .split("-")
+                  .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                  .join(" ")}
                 <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[#c8d8e4] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
-              </Link>
+              </button>
             ))}
             <Link to="/login">
               <Button className="bg-[#2b6777] hover:bg-[#3a7d8f] text-white group relative overflow-hidden">
                 <span className="relative z-10">Login</span>
-                <ChevronRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" />
+                <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" />
                 <span className="absolute inset-0 bg-[#c8d8e4] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
               </Button>
             </Link>
@@ -111,21 +117,22 @@ function UserHome() {
       {/* Mobile Menu */}
       {mobileMenuOpen && (
         <div className="fixed inset-0 z-40 bg-[#1a3e48] bg-opacity-95 flex flex-col items-center justify-center">
-          {["home", "features", "services", "contact"].map((item) => (
-            <Link
+          {["home", "features", "how-it-works", "contact"].map((item) => (
+            <button
               key={item}
-              to={`#${item}`}
               className="text-2xl mb-6 hover:text-[#c8d8e4] transition-colors duration-300"
-              onClick={(e) => {
-                e.preventDefault()
-                document.getElementById(item)?.scrollIntoView({ behavior: "smooth" })
+              onClick={() => {
+                scrollToSection(item)
                 setMobileMenuOpen(false)
               }}
             >
-              {item.charAt(0).toUpperCase() + item.slice(1)}
-            </Link>
+              {item
+                .split("-")
+                .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(" ")}
+            </button>
           ))}
-          <Link to="/get-started" onClick={() => setMobileMenuOpen(false)}>
+          <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
             <Button className="bg-[#2b6777] hover:bg-[#3a7d8f] text-white mt-6">Login</Button>
           </Link>
         </div>
@@ -135,39 +142,36 @@ function UserHome() {
         <div className="container mx-auto px-6">
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#08242c]/10 border border-[#08242c]/20 mb-8 animate-fade-up">
-              <Star className="h-4 w-4 text-[#c8d8e4] animate-pulse" />
-              <span className="text-sm">Lorem ipsum dolor sit amet</span>
+              <Zap className="h-4 w-4 text-[#c8d8e4] animate-pulse" />
+              <span className="text-sm">Revolutionize Your Learning Experience</span>
             </div>
             <h1 className="text-4xl md:text-7xl font-bold mb-6 animate-fade-up leading-tight">
-              <span className="bg-gradient-to-r from-white to-[#c8d8e4] bg-clip-text text-transparent">Lorem</span>{" "}
-              ipsum dolor sit amet
+              <span className="bg-gradient-to-r from-white to-[#c8d8e4] bg-clip-text text-transparent">LearnFlow:</span>{" "}
+              Streamline Your Study Process
             </h1>
             <p className="text-lg md:text-xl mb-8 text-white/70 animate-fade-up animation-delay-200 leading-relaxed">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et
-              dolore magna aliqua.
+              Create collections, add notes, collaborate with peers, and generate flashcards. LearnFlow makes learning
+              easier and more efficient than ever before.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 animate-fade-up animation-delay-300">
-              <Link to="/start-journey">
+              <Link to="/sign-up">
                 <Button
                   size="lg"
                   className="w-full sm:w-auto bg-[#2b6777] hover:bg-[#3a7d8f] text-white group relative overflow-hidden"
                 >
-                  <span className="relative z-10">Lorem Ipsum</span>
+                  <span className="relative z-10">Get Started</span>
                   <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
                   <span className="absolute inset-0 bg-[#c8d8e4] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
                 </Button>
               </Link>
-              <Link to="/our-vision">
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="w-full sm:w-auto text-[#c8d8e4] border-[#c8d8e4] hover:bg-[#2b6777]/10 group relative overflow-hidden"
-                >
-                  <span className="relative z-10">Dolor Sit Amet</span>
-                  <ChevronRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
-                  <span className="absolute inset-0 bg-[#c8d8e4]/10 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
-                </Button>
-              </Link>
+              <button
+                onClick={() => scrollToSection("features")}
+                className="w-full sm:w-auto text-[#c8d8e4] border border-[#c8d8e4] hover:bg-[#2b6777]/10 group relative overflow-hidden px-8 py-3 rounded-md"
+              >
+                <span className="relative z-10">Learn More</span>
+                <ArrowRight className="ml-2 h-5 w-5 inline-block group-hover:translate-x-1 transition-transform duration-300" />
+                <span className="absolute inset-0 bg-[#c8d8e4]/10 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
+              </button>
             </div>
           </div>
         </div>
@@ -176,10 +180,9 @@ function UserHome() {
       <section id="features" className="relative py-32">
         <div className="container mx-auto px-6">
           <div className="text-center mb-20">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 animate-fade-up">Lorem Ipsum Dolor</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 animate-fade-up">Key Features</h2>
             <p className="text-white/70 max-w-2xl mx-auto animate-fade-up animation-delay-200">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et
-              dolore magna aliqua.
+              Discover how LearnFlow can transform your study habits and boost your productivity.
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -205,16 +208,16 @@ function UserHome() {
         </div>
       </section>
 
-      <section id="services" className="relative py-32 bg-[#08242c]/5">
+      <section id="how-it-works" className="relative py-32 bg-[#08242c]/5">
         <div className="container mx-auto px-6">
           <div className="text-center mb-20">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 animate-fade-up">Lorem Ipsum</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 animate-fade-up">How It Works</h2>
             <p className="text-white/70 max-w-2xl mx-auto animate-fade-up animation-delay-200">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+              LearnFlow simplifies your study process in just a few easy steps.
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {services.map((service, index) => (
+            {howItWorks.map((step, index) => (
               <Card
                 key={index}
                 className="p-8 group hover:border-[#08242c]/50 transition-all duration-500 bg-[#1a3e48]/50 backdrop-blur-lg border-[#2b6777]/20 animate-fade-up"
@@ -222,19 +225,19 @@ function UserHome() {
               >
                 <h3 className="text-2xl font-bold mb-4 flex items-center gap-3">
                   <Zap className="h-6 w-6 text-[#c8d8e4] group-hover:rotate-12 transition-transform duration-300" />
-                  {service.title}
+                  {step.title}
                 </h3>
-                <p className="text-white/70 mb-6 leading-relaxed">{service.description}</p>
-                <Link to={`/services/${service.title.toLowerCase().replace(/\s+/g, "-")}`}>
-                  <Button
-                    variant="outline"
-                    className="group-hover:bg-[#08242c] group-hover:text-white group-hover:border-transparent transition-all duration-300 group relative overflow-hidden"
-                  >
-                    <span className="relative z-10">Lorem Ipsum</span>
-                    <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" />
-                    <span className="absolute inset-0 bg-[#c8d8e4] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
-                  </Button>
-                </Link>
+                <p className="text-white/70 mb-6 leading-relaxed">{step.description}</p>
+                <button
+                  onClick={() =>
+                    (window.location.href = `/learn-more/${step.title.toLowerCase().replace(/\s+/g, "-")}`)
+                  }
+                  className="px-4 py-2 border border-[#c8d8e4] text-[#c8d8e4] rounded-md group-hover:bg-[#08242c] group-hover:text-white group-hover:border-transparent transition-all duration-300 group relative overflow-hidden"
+                >
+                  <span className="relative z-10">Learn More</span>
+                  <ArrowRight className="ml-2 h-4 w-4 inline-block group-hover:translate-x-1 transition-transform duration-300" />
+                  <span className="absolute inset-0 bg-[#c8d8e4] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
+                </button>
               </Card>
             ))}
           </div>
@@ -247,30 +250,29 @@ function UserHome() {
           <Card className="max-w-4xl mx-auto p-8 md:p-12 text-center bg-[#1a3e48]/50 backdrop-blur-lg border-[#08242c]/20 overflow-hidden animate-fade-up">
             <div className="absolute inset-0 bg-gradient-to-r from-[#08242c] to-[#3a7d8f] blur-[100px] opacity-20" />
             <div className="relative z-10">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">Lorem Ipsum Dolor Sit Amet?</h2>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">Ready to Transform Your Learning?</h2>
               <p className="text-lg md:text-xl text-white/70 mb-8 max-w-2xl mx-auto">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et
-                dolore magna aliqua.
+                Join LearnFlow today and experience a new way of organizing, collaborating, and mastering your studies.
               </p>
               <div className="flex flex-col sm:flex-row justify-center gap-4">
-                <Link to="/get-started-now">
+                <Link to="/sign-up">
                   <Button
                     size="lg"
                     className="w-full sm:w-auto bg-[#2b6777] hover:bg-[#3a7d8f] text-white group relative overflow-hidden"
                   >
-                    <span className="relative z-10">Lorem Ipsum</span>
+                    <span className="relative z-10">Get Started</span>
                     <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
                     <span className="absolute inset-0 bg-[#c8d8e4] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
                   </Button>
                 </Link>
-                <Link to="/schedule-demo">
+                <Link to="/demo">
                   <Button
                     size="lg"
                     variant="outline"
                     className="w-full sm:w-auto text-[#c8d8e4] border-[#c8d8e4] hover:bg-[#08242c]/10 group relative overflow-hidden"
                   >
-                    <span className="relative z-10">Dolor Sit Amet</span>
-                    <ChevronRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
+                    <span className="relative z-10">Request Demo</span>
+                    <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
                     <span className="absolute inset-0 bg-[#c8d8e4]/10 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
                   </Button>
                 </Link>
@@ -285,47 +287,56 @@ function UserHome() {
 
 const features = [
   {
-    icon: Shield,
-    title: "Lorem Ipsum",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    icon: BookOpen,
+    title: "Create Collections",
+    description: "Organize your study materials into collections for easy access and management.",
   },
   {
-    icon: Rocket,
-    title: "Dolor Sit Amet",
-    description:
-      "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+    icon: FileText,
+    title: "Add Notes & PDFs",
+    description: "Seamlessly add notes and upload PDFs to your collections, keeping all your resources in one place.",
   },
   {
-    icon: Code2,
-    title: "Consectetur Adipiscing",
-    description:
-      "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
+    icon: Users,
+    title: "Collaborate",
+    description: "Invite collaborators to your collections, fostering teamwork and knowledge sharing.",
+  },
+  {
+    icon: Zap,
+    title: "Generate Flashcards",
+    description: "Automatically create flashcards from your notes and resources for efficient studying.",
+  },
+  {
+    icon: MessageSquare,
+    title: "Talk to PDFs",
+    description: "Interact with your PDF resources using our AI-powered chat feature for deeper understanding.",
+  },
+  {
+    icon: Lightbulb,
+    title: "Smart Notifications",
+    description: "Receive timely notifications about collaboration invites and updates to your collections.",
   },
 ]
 
-const services = [
+const howItWorks = [
   {
-    title: "Lorem Ipsum",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    title: "Create Your Account",
+    description: "Sign up for LearnFlow and set up your personalized learning environment.",
   },
   {
-    title: "Dolor Sit Amet",
-    description:
-      "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+    title: "Build Your Collections",
+    description: "Organize your study materials into collections, adding notes and uploading PDFs.",
   },
   {
-    title: "Consectetur Adipiscing",
+    title: "Collaborate and Share",
     description:
-      "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
+      "Invite friends or classmates to collaborate on your collections or make them public for wider access.",
   },
   {
-    title: "Elit Sed Do",
-    description:
-      "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+    title: "Generate Study Aids",
+    description: "Use our AI-powered tools to create flashcards and interact with your PDFs for enhanced learning.",
   },
 ]
 
-export default UserHome
+// export default Home
 
