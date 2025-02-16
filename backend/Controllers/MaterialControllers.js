@@ -29,6 +29,7 @@ const postVectorsForMaterial = async (materialId) => {
         // Check if the file is a PDF by its extension
         if (fileName.endsWith('.pdf')) {
             console.log("Parsing PDF...");
+            console.log("adding things")
 
             // Extract text from PDF
             const pdfData = await pdfParse(fileBuffer);
