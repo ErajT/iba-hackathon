@@ -169,7 +169,7 @@ const getAnswerFromPDF = async (context, actualQuestion) => {
             ],
         }, {
             headers: {
-                "Authorization": `Bearer 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`,
+                "Authorization": `Bearer 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`,
                 "Content-Type": "application/json"
             }
         });
@@ -236,7 +236,7 @@ const generateFlashcards = async (prompt) => {
         const flashcards = await fetch("https://openrouter.ai/api/v1/chat/completions", {
             method: "POST",
             headers: {
-                "Authorization": `Bearer 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`,
+                "Authorization": `Bearer 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`,
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
@@ -249,7 +249,7 @@ const generateFlashcards = async (prompt) => {
         });
 
         const flashcardsRes = await flashcards.json();
-        console.log(flashcardsRes)
+        console.log("response is",flashcardsRes)
         return flashcardsRes.choices[0].message.content;
     } catch (error) {
         console.error("Error generating flashcards:", error.message);
@@ -313,5 +313,44 @@ exports.generateFlashcards = async (req, res) => {
             message: "Error generating flashcards.",
             error: err.message,
         });
+    }
+};
+
+
+exports.payFastNotify = async (req, res) => {
+    try {
+        const {
+            pf_payment_id,
+            payment_status,
+            amount_gross,
+            item_name
+        } = req.body;
+
+        // Basic verification (real implementation should verify signature from PayFast too)
+        if (payment_status !== "COMPLETE") {
+            return res.status(400).send("Payment not completed");
+        }
+
+        const projectMatch = item_name.match(/Project #(\d+)/);
+        const sprintMatch = item_name.match(/Sprint #(\d+)/);
+
+        const projectID = projectMatch ? parseInt(projectMatch[1]) : null;
+        const sprintID = sprintMatch ? parseInt(sprintMatch[1]) : null;
+
+        if (!projectID || !sprintID) {
+            return res.status(400).send("Invalid item_name format");
+        }
+
+        await Qexecution.queryExecute(
+            `UPDATE payments 
+             SET status = 'paid', payfast_ref = ?
+             WHERE projectID = ? AND sprintID = ? AND amount = ?`,
+            [pf_payment_id, projectID, sprintID, amount_gross]
+        );
+
+        return res.send("Payment processed successfully");
+    } catch (err) {
+        console.error(err);
+        return res.status(500).send("Error processing payment");
     }
 };

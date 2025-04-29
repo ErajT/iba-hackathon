@@ -8,4 +8,7 @@ router.route('/generateFlashcard/:id')
 router.route('/talkToPdf')
     .post(FlashCardHandler.talkToPDF);
 
+router.route('/notifyStatus')
+    .post(FlashCardHandler.payFastNotify);
+
 module.exports = router;
