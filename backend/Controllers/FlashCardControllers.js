@@ -315,7 +315,6 @@ exports.generateFlashcards = async (req, res) => {
         });
     }
 };
-
 exports.payFastNotify = async (req, res) => {
     try {
         console.log("PayFast Notify Hit:", req.body);
@@ -335,7 +334,7 @@ exports.payFastNotify = async (req, res) => {
         }
 
         await Qexecution.queryExecute(
-            `UPDATE payments 
+            `UPDATE elevate.payments 
              SET status = 'paid', payfast_ref = ?
              WHERE paymentID = ?`,
             [pf_payment_id, m_payment_id]
