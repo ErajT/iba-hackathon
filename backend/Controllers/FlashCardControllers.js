@@ -315,6 +315,7 @@ exports.generateFlashcards = async (req, res) => {
         });
     }
 };
+
 exports.payFastNotify = async (req, res) => {
     try {
         console.log("PayFast Notify Hit:", req.body);
@@ -333,12 +334,31 @@ exports.payFastNotify = async (req, res) => {
             return res.status(400).send("Missing payment ID");
         }
 
+        // Get the payment record to check paymentType and projectID
+        const [payment] = await Qexecution.queryExecute(
+            SELECT paymentType, projectID FROM payments WHERE paymentID = ?,
+            [m_payment_id]
+        );
+
+        if (!payment) {
+            return res.status(404).send("Payment record not found");
+        }
+
+        // Update payment as paid
         await Qexecution.queryExecute(
-            `UPDATE elevate.payments 
+            `UPDATE payments 
              SET status = 'paid', payfast_ref = ?
              WHERE paymentID = ?`,
             [pf_payment_id, m_payment_id]
         );
+
+        // If it's an advance payment, set billingCompleted = 1 in project
+        if (payment.paymentType === 'advance') {
+            await Qexecution.queryExecute(
+                UPDATE project SET billingCompleted = 1 WHERE projectID = ?,
+                [payment.projectID]
+            );
+        }
 
         return res.send("Payment processed successfully");
     } catch (err) {
