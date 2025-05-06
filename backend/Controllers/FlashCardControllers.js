@@ -336,7 +336,7 @@ exports.payFastNotify = async (req, res) => {
 
         // Get the payment record to check paymentType and projectID
         const [payment] = await Qexecution.queryExecute(
-            SELECT paymentType, projectID FROM payments WHERE paymentID = ?,
+            `SELECT paymentType, projectID FROM payments WHERE paymentID = ?`,
             [m_payment_id]
         );
 
@@ -354,8 +354,7 @@ exports.payFastNotify = async (req, res) => {
 
         // If it's an advance payment, set billingCompleted = 1 in project
         if (payment.paymentType === 'advance') {
-            await Qexecution.queryExecute(
-                UPDATE project SET billingCompleted = 1 WHERE projectID = ?,
+            await Qexecution.queryExecute(`UPDATE project SET billingCompleted = 1 WHERE projectID = ?`,
                 [payment.projectID]
             );
         }
